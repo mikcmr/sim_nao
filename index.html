@@ -288,133 +288,87 @@
             e.preventDefault();
             const ticketid = document.getElementById('ticketid').value.trim();
             const solicitacao = document.getElementById('solicitacao').value.trim();
-            document.getElementById('msg').textContent = '';
-            if (!ticketid || !solicitacao) {
-                document.getElementById('msg').textContent = 'Preencha todos os campos.';
-                document.getElementById('msg').className = 'msg error';
-                return;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Estilos extras para grid e caixas
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .actions-grid {
+                display: flex;
+                gap: 24px;
+                margin-top: 32px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
-            // Enviar para webhook
-            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao, ticket_id, conversation_id });
-            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Chamado: ${ticketid}</div>`;
-        };
-        document.getElementById('form1').onsubmit = async function(e) {
-            e.preventDefault();
-            const ticketid = document.getElementById('ticketid').value.trim();
-            const solicitacao = document.getElementById('solicitacao').value.trim();
-            document.getElementById('msg').textContent = '';
-            if (!ticketid || !solicitacao) {
-                document.getElementById('msg').textContent = 'Preencha todos os campos.';
-                document.getElementById('msg').className = 'msg error';
-                return;
+            .action-box {
+                background: var(--estoca-blue);
+                color: var(--estoca-white);
+                border-radius: 8px;
+                box-shadow: 0 2px 8px #0002;
+                padding: 8px 0;
+                width: 100%;
+                max-width: 100%;
+                text-align: center;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                margin-bottom: 8px;
+                transition: background 0.2s, transform 0.2s;
+                border: none;
+                outline: none;
+                display: block;
             }
-            // Enviar para webhook
-            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao, ticket_id, conversation_id });
-            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Chamado: ${ticketid}</div>`;
-        };
-    }
-
-    function abrirFluxo2() {
-        // Motivos de contato para pedido de venda
-        const motivosPedido = [
-            { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
-            { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
-            { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
-            { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
-            { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
-            { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
-            { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
-            { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
-            { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
-            { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
-            { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
-            { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
-            { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' },
-            { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
-            { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
-            { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
-            { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
-            { texto: 'Pedido B2B', label: 'pedido_b2b' },
-            { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
-            { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
-            { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
-            { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
-            { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
-            { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
-            { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
-            { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' }
-        ].sort((a, b) => a.texto.localeCompare(b.texto));
-        const container = document.getElementById('main-container');
-        let motivosHtml = '';
-        motivosPedido.forEach(motivo => {
-            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:10px;font-size:0.95rem;">${motivo.texto}</div>`;
-        });
-        container.innerHTML = `
-            <h2>Motivo do pedido de venda:</h2>
-            <div class="actions-grid" id="motivos-pedido-grid">${motivosHtml}</div>
-            <div id="msg" class="msg"></div>
+            .action-box:hover {
+                background: var(--estoca-orange);
+                color: var(--estoca-white);
+                transform: translateY(-2px) scale(1.02);
+            }
+            .actions-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 32px;
+                justify-content: center;
+            }
+            .action-title {
+                display: block;
+            }
         `;
-        // Adiciona evento para cada motivo
-        document.querySelectorAll('.action-box[data-label]').forEach(box => {
-            box.onclick = () => abrirFormPedido(box.getAttribute('data-label'), box.textContent);
-        });
-        // Formulário para pedido
-        function abrirFormPedido(motivoLabel, motivoTexto) {
-            container.innerHTML = `
-                <h2 style="font-size:1rem;line-height:1.2;">${motivoTexto}</h2>
-                <form id="formPedido" class="form-box">
-                    <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
-                    <input type="text" id="orderid" name="orderid" required style="width:100%;margin-bottom:8px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;">
-                    <div id="uuid-alert" class="error" style="display:none;margin-bottom:8px;font-size:0.95rem;"></div>
-                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
-                    <div class="action-box" id="enviar-pedido">Enviar</div>
-                </form>
-                <div id="msg" class="msg"></div>
-            `;
-            document.getElementById('enviar-pedido').onclick = async function(e) {
-                e.preventDefault();
-                const orderid = uuidInput.value.trim();
-                const descricao = document.getElementById('descricao').value.trim();
-                if (!validarUUID(orderid)) {
-                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-                    uuidAlert.style.display = 'block';
-                    return;
-                }
-                if (!descricao) {
-                    document.getElementById('msg').textContent = 'Preencha a descrição.';
-                    document.getElementById('msg').className = 'msg error';
-                    return;
-                }
-                // Enviar para webhook
-                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Pedido: ${orderid}<br>Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
-            };
-            // Validação UUID em tempo real
-            const uuidInput = document.getElementById('orderid');
-            const uuidAlert = document.getElementById('uuid-alert');
-            uuidInput.addEventListener('input', function() {
-                if (!validarUUID(uuidInput.value)) {
-                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
-                    uuidAlert.style.display = 'block';
-                } else {
-                    uuidAlert.textContent = '';
-                    uuidAlert.style.display = 'none';
-                }
-            });
-            document.getElementById('formPedido').onsubmit = async function(e) {
-                e.preventDefault();
-                const orderid = uuidInput.value.trim();
-                const descricao = document.getElementById('descricao').value.trim();
-                if (!validarUUID(orderid)) {
-                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-                    uuidAlert.style.display = 'block';
-                    return;
-                }
-                if (!descricao) {
-                    document.getElementById('msg').textContent = 'Preencha a descrição.';
-                    document.getElementById('msg').className = 'msg error';
-                    return;
+        document.head.appendChild(style);
+
+        // Captura ticket_id e conversation_id da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticket_id = urlParams.get('ticket_id') || '';
+        const conversation_id = urlParams.get('conversation_id') || '';
+
+        // Verifica se o ticket_id já foi respondido
+        const TICKET_KEY = 'eva_ticket_' + ticket_id;
+        if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
+            document.getElementById('main-container').innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+            return;
+        }
+
+        // Navegação dos fluxos
+        document.getElementById('acao1').onclick = () => abrirFluxo1();
+        document.getElementById('acao2').onclick = () => abrirFluxo2();
+        document.getElementById('acao3').onclick = () => abrirFluxo3();
+
+        function abrirFluxo1() {
+            // ...existing code...
+        }
+
+        function abrirFluxo2() {
+            // ...existing code...
+        }
+
+        function abrirFluxo3() {
+            // ...existing code...
+        }
+
+        // Função para enviar para webhook
+        async function enviarWebhook(payload) {
+            // ...existing code...
+        }
+    });
                 }
                 // Enviar para webhook
                 await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
