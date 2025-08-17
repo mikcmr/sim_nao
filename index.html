@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pergunta Sim ou Não</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px 30px;
+      cursor: pointer;
+    }
+    #resposta {
+      margin-top: 30px;
+      font-weight: bold;
+      font-size: 24px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Você aceita?</h1>
+  <button onclick="responder('Sim')">Sim</button>
+  <button onclick="responder('Não')">Não</button>
+
+  <div id="resposta"></div>
+
+  <script>
+    function responder(resposta) {
+      document.getElementById('resposta').textContent = `Você escolheu: ${resposta}`;
+    }
+  </script>
+</body>
+</html>
