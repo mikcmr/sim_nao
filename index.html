@@ -13,7 +13,6 @@
       --estoca-white: #fff;
       --estoca-black: #222;
     }
-
     body {
       font-family: 'Montserrat', Arial, sans-serif;
       background: var(--estoca-bg);
@@ -21,7 +20,6 @@
       padding: 0;
       color: var(--estoca-black);
     }
-
     .container {
       max-width: 500px;
       margin: 40px auto;
@@ -31,7 +29,6 @@
       padding: 32px;
       position: relative;
     }
-
     h2 {
       margin-top: 0;
       color: var(--estoca-blue);
@@ -40,17 +37,14 @@
       line-height: 1.2;
       letter-spacing: 0.01em;
     }
-
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-
     li {
       margin-bottom: 12px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -64,13 +58,11 @@
       transition: background 0.2s;
       font-weight: 700;
     }
-
     button:hover,
     .motivo-btn:hover,
     .enviar-btn:hover {
       background: var(--estoca-blue);
     }
-
     /* Menu Cards Grid */
     .menu-card-grid {
       display: flex;
@@ -79,7 +71,6 @@
       margin-top: 24px;
       flex-wrap: wrap;
     }
-
     .menu-card {
       background: var(--estoca-blue);
       color: var(--estoca-white);
@@ -94,12 +85,10 @@
       transition: background-color 0.3s, transform 0.2s;
       user-select: none;
     }
-
     .menu-card:hover {
       background: var(--estoca-orange);
       transform: translateY(-3px);
     }
-
     .menu-icon {
       display: flex;
       align-items: center;
@@ -110,21 +99,17 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-
     .action-title {
       font-weight: 600;
       font-size: 1rem;
     }
-
     .msg {
       margin-top: 16px;
     }
-
     .msg.error {
       color: #d00;
       font-weight: 600;
     }
-
     /* Action Boxes */
     .action-box {
       background: var(--estoca-blue);
@@ -144,13 +129,11 @@
       display: block;
       user-select: none;
     }
-
     .action-box:hover {
       background: var(--estoca-orange);
       color: var(--estoca-white);
       transform: translateY(-2px) scale(1.02);
     }
-
     /* Autocomplete lists */
     ul.autocomplete-list {
       list-style: none;
@@ -167,24 +150,21 @@
       display: none;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
-
     ul.autocomplete-list li {
       padding: 8px;
       cursor: pointer;
       border-bottom: 1px solid #eee;
     }
-
     ul.autocomplete-list li:last-child {
       border-bottom: none;
     }
-
     ul.autocomplete-list li:hover {
       background-color: var(--estoca-orange);
       color: var(--estoca-white);
     }
-
     /* Input fields and textarea */
     input[type="text"],
+    input[type="email"],
     textarea {
       width: 100%;
       margin-bottom: 8px;
@@ -195,12 +175,10 @@
       font-family: 'Montserrat', Arial, sans-serif;
       box-sizing: border-box;
     }
-
     textarea {
       resize: vertical;
       min-height: 80px;
     }
-
     /* For relative positioning of autocomplete container */
     .autocomplete-wrapper {
       position: relative;
@@ -251,14 +229,14 @@
     </div>
     <div id="msg" class="msg"></div>
   </div>
-
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const ticket_id = urlParams.get('ticket_id') || '';
     const conversation_id = urlParams.get('conversation_id') || '';
+    const email_cliente = urlParams.get('email_cliente') || '';
     const container = document.getElementById('main-container');
-
     const TICKET_KEY = 'eva_ticket_' + ticket_id;
+
     if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
       container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
     } else {
@@ -292,28 +270,33 @@
         <form id="form1" class="form-box" novalidate>
           <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
           <input type="text" id="ticketid" name="ticketid" required />
+          
+          <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+          <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+          
           <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
           <textarea id="solicitacao" name="solicitacao" required></textarea>
           <div class="action-box" id="enviar-chamado">Enviar</div>
         </form>
         <div id="msg" class="msg"></div>
       `;
-
       const enviarBtn = document.getElementById('enviar-chamado');
       const form = document.getElementById('form1');
       const msg = document.getElementById('msg');
-
       enviarBtn.onclick = async e => {
         e.preventDefault();
-
         const ticketid = form.ticketid.value.trim();
+        const emailClienteValue = form.email_cliente.value.trim();
         const solicitacao = form.solicitacao.value.trim();
-
         msg.textContent = '';
         msg.className = 'msg';
-
         if (!ticketid) {
           msg.textContent = 'Preencha o TicketID.';
+          msg.classList.add('error');
+          return;
+        }
+        if (!emailClienteValue) {
+          msg.textContent = 'Preencha o email do cliente.';
           msg.classList.add('error');
           return;
         }
@@ -322,18 +305,16 @@
           msg.classList.add('error');
           return;
         }
-
         await enviarWebhook({
           tipo: 'chamado_aberto',
           ticketid,
           solicitacao,
           ticket_id,
           conversation_id,
+          email_cliente: emailClienteValue,
         });
-
-        container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Solicitação: ${solicitacao}</div>`;
+        container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Email: ${emailClienteValue}<br>Solicitação: ${solicitacao}</div>`;
       };
-
       form.onsubmit = e => {
         e.preventDefault();
         enviarBtn.click();
@@ -378,9 +359,14 @@
             <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
             <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
           </div>
+
           <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
           <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
           <div id="uuid-alert" class="msg error" style="display:none;"></div>
+
+          <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+          <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+
           <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
           <textarea id="descricao" name="descricao" required></textarea>
           <div class="action-box" id="enviar-pedido">Enviar</div>
@@ -397,15 +383,12 @@
       motivoInput.addEventListener('input', () => {
         const val = motivoInput.value.toLowerCase();
         motivoList.innerHTML = '';
-
         if (!val) {
           motivoList.style.display = 'none';
           motivoSelecionado = null;
           return;
         }
-
         const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
-
         filtrados.forEach(motivo => {
           const li = document.createElement('li');
           li.textContent = motivo.texto;
@@ -445,11 +428,10 @@
 
       enviarBtn.onclick = async e => {
         e.preventDefault();
-
         const orderid = uuidInput.value.trim();
         const descricao = form.descricao.value.trim();
+        const emailClienteValue = form.email_cliente.value.trim();
         const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
-
         msg.textContent = '';
         msg.className = 'msg';
 
@@ -458,10 +440,17 @@
           msg.classList.add('error');
           return;
         }
-
         if (!validarUUID(orderid)) {
           uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
           uuidAlert.style.display = 'block';
+          return;
+        } else {
+          uuidAlert.style.display = 'none';
+        }
+
+        if (!emailClienteValue) {
+          msg.textContent = 'Preencha o email do cliente.';
+          msg.classList.add('error');
           return;
         }
 
@@ -479,12 +468,14 @@
           descricao,
           ticket_id,
           conversation_id,
+          email_cliente: emailClienteValue,
         });
 
         container.innerHTML = `
           <h2>Solicitação enviada!</h2>
           <div class="msg">
             Pedido: ${orderid}<br>
+            Email: ${emailClienteValue}<br>
             Motivo: ${motivoAtual.texto}<br>
             Descrição: ${descricao}
           </div>
@@ -498,7 +489,6 @@
     }
 
     function abrirFluxo3() {
-      // Mantém essa função igual ao código anterior ou ajuste conforme necessário...
       const motivosDiversos = [
         { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
         { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
@@ -530,6 +520,10 @@
             <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
             <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
           </div>
+
+          <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+          <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+
           <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
           <textarea id="descricao" name="descricao" required></textarea>
           <div class="action-box" id="enviar-diversos">Enviar</div>
@@ -544,17 +538,14 @@
       motivoInput.addEventListener('input', () => {
         const val = motivoInput.value.toLowerCase();
         motivoList.innerHTML = '';
-
         if (!val) {
           motivoList.style.display = 'none';
           motivoSelecionado = null;
           return;
         }
-
         const filtrados = motivosDiversos.filter(m =>
           m.texto.toLowerCase().includes(val)
         );
-
         filtrados.forEach(motivo => {
           const li = document.createElement('li');
           li.textContent = motivo.texto;
@@ -565,7 +556,6 @@
           };
           motivoList.appendChild(li);
         });
-
         motivoList.style.display = filtrados.length ? 'block' : 'none';
       });
 
@@ -585,26 +575,27 @@
 
       enviarBtn.onclick = async e => {
         e.preventDefault();
-
         const descricao = form.descricao.value.trim();
+        const emailClienteValue = form.email_cliente.value.trim();
         const motivoAtual =
           motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
-
         msg.textContent = '';
         msg.className = 'msg';
-
         if (!motivoAtual) {
           msg.textContent = 'Selecione um motivo válido.';
           msg.classList.add('error');
           return;
         }
-
+        if (!emailClienteValue) {
+          msg.textContent = 'Preencha o email do cliente.';
+          msg.classList.add('error');
+          return;
+        }
         if (!descricao) {
           msg.textContent = 'Preencha a descrição.';
           msg.classList.add('error');
           return;
         }
-
         await enviarWebhook({
           tipo: 'demais_solicitacoes',
           motivo: motivoAtual.label,
@@ -612,17 +603,17 @@
           descricao,
           ticket_id,
           conversation_id,
+          email_cliente: emailClienteValue,
         });
-
         container.innerHTML = `
           <h2>Solicitação enviada!</h2>
           <div class="msg">
+            Email: ${emailClienteValue}<br />
             Motivo: ${motivoAtual.texto}<br />
             Descrição: ${descricao}
           </div>
         `;
       };
-
       form.onsubmit = e => {
         e.preventDefault();
         enviarBtn.click();
