@@ -1,39 +1,116 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pergunta Sim ou Não</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 50px;
-    }
-    button {
-      font-size: 20px;
-      margin: 10px;
-      padding: 10px 30px;
-      cursor: pointer;
-    }
-    #resposta {
-      margin-top: 30px;
-      font-weight: bold;
-      font-size: 24px;
-      color: #333;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Motivo de Contato</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+        h2 { margin-top: 0; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 12px; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 4px; background: #0074d9; color: #fff; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #005fa3; }
+        .msg { margin-top: 24px; color: green; font-weight: bold; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
-  <h1>Você aceita?</h1>
-  <button onclick="responder('Sim')">Sim</button>
-  <button onclick="responder('Não')">Não</button>
+    <div class="container">
+        <h2>Escolha um motivo de contato:</h2>
+        <ul id="motivos-list"></ul>
+        <div id="msg" class="msg"></div>
+    </div>
+    <script>
+    // Motivos e labels
+    const motivos = [
+        { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
+        { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
+        { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+        { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
+        { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
+        { texto: 'Pedido B2B', label: 'pedido_b2b' },
+        { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
+        { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
+        { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+        { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+        { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
+        { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+        { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+        { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
+        { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
+        { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
+        { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
+        { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+        { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
+        { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
+        { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
+        { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
+        { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
+        { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+        { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
+        { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
+    ];
 
-  <div id="resposta"></div>
-
-  <script>
-    function responder(resposta) {
-      document.getElementById('resposta').textContent = `Você escolheu: ${resposta}`;
+    // Função para pegar parâmetros da URL
+    function getParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
     }
-  </script>
+
+    // Renderizar lista de motivos
+    const ul = document.getElementById('motivos-list');
+    motivos.forEach(motivo => {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.textContent = motivo.texto;
+        btn.onclick = () => enviarMotivo(motivo.label);
+        li.appendChild(btn);
+        ul.appendChild(li);
+    });
+
+    // Enviar motivo para webhook
+    async function enviarMotivo(label) {
+        const ticket_id = getParam('ticket_id');
+        const conversation_id = getParam('conversation_id');
+        const msgDiv = document.getElementById('msg');
+        msgDiv.textContent = '';
+
+        if (!ticket_id || !conversation_id) {
+            msgDiv.textContent = 'Erro: ticket_id ou conversation_id não informado.';
+            msgDiv.className = 'msg error';
+            return;
+        }
+
+        // Desabilitar todos os botões e mostrar apenas a escolha
+        const container = document.querySelector('.container');
+        container.innerHTML = `<h2>Você escolheu:</h2><div class="escolha" style="font-size:20px;padding:24px 0;color:#0074d9;font-weight:bold;">${motivos.find(m=>m.label===label).texto}</div><div id="msg" class="msg"></div>`;
+
+        try {
+            const res = await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ticket_id,
+                    conversation_id,
+                    motivo: label
+                })
+            });
+            const msgDivNew = document.getElementById('msg');
+            if (res.ok) {
+                msgDivNew.textContent = 'Resposta enviada com sucesso!';
+                msgDivNew.className = 'msg';
+            } else {
+                msgDivNew.textContent = 'Erro ao enviar resposta.';
+                msgDivNew.className = 'msg error';
+            }
+        } catch (e) {
+            const msgDivNew = document.getElementById('msg');
+            msgDivNew.textContent = 'Erro de conexão.';
+            msgDivNew.className = 'msg error';
+        }
+    }
+    </script>
 </body>
 </html>
