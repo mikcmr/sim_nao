@@ -1,115 +1,470 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Motivo de Contato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
-        .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 32px; }
-        h2 { margin-top: 0; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 12px; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 4px; background: #0074d9; color: #fff; font-size: 16px; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #005fa3; }
-        .msg { margin-top: 24px; color: green; font-weight: bold; }
-        .error { color: red; }
+        :root {
+            --estoca-blue: #0074d9;
+            --estoca-dark-blue: #005fa3;
+            --estoca-orange: #ff6600;
+            --estoca-bg: #f7f7f7;
+            --estoca-white: #fff;
+            --estoca-black: #222;
+        }
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: var(--estoca-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--estoca-black);
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: var(--estoca-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 32px;
+        }
+        h2 {
+            margin-top: 0;
+            color: var(--estoca-blue);
+            font-weight: 700;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 12px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background: var(--estoca-orange);
+            color: var(--estoca-white);
+            font-size: 16px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 700;
+        }
+        button:hover {
+            background: var(--estoca-blue);
+        }
+        .msg {
+            margin-top: 24px;
+            color: var(--estoca-blue);
+            font-weight: bold;
+        }
+        .error {
+            color: var(--estoca-orange);
+        }
+        .escolha {
+            color: var(--estoca-orange);
+        }
+        /* Menu inicial estilo caixa/card */
+        .menu-card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-top: 32px;
+            align-items: center;
+        }
+        .menu-card {
+            display: flex;
+            align-items: center;
+            background: var(--estoca-blue);
+            color: var(--estoca-white);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #0002;
+            padding: 28px 32px;
+            min-width: 320px;
+            max-width: 400px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
+            margin-bottom: 0;
+            border: none;
+            outline: none;
+        }
+        .menu-card:hover {
+            background: var(--estoca-dark-blue);
+            box-shadow: 0 8px 32px #0074d966;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .menu-card .menu-icon {
+            margin-right: 18px;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-card .action-title {
+            flex: 1;
+            text-align: left;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .action-title {
+            display: block;
+        }
+        /* Botões simples para motivos e envio */
+        .motivo-btn, .enviar-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background: var(--estoca-orange);
+            color: var(--estoca-white);
+            font-size: 16px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .motivo-btn:hover, .enviar-btn:hover {
+            background: var(--estoca-blue);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Escolha um motivo de contato:</h2>
-        <ul id="motivos-list"></ul>
+    <div class="container" id="main-container">
+        <h2>Qual ação você quer fazer?</h2>
+        <div class="menu-card-grid">
+            <div class="menu-card" id="acao1">
+                <span class="menu-icon"> 
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
+                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
+                    </svg>
+                </span>
+                <span class="action-title">Falar sobre um chamado já aberto</span>
+            </div>
+            <div class="menu-card" id="acao2">
+                <span class="menu-icon"> 
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
+                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
+                    </svg>
+                </span>
+                <span class="action-title">Solicitação sobre um pedido de venda</span>
+            </div>
+            <div class="menu-card" id="acao3">
+                <span class="menu-icon"> 
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
+                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
+                    </svg>
+                </span>
+                <span class="action-title">Demais solicitações</span>
+            </div>
+        </div>
         <div id="msg" class="msg"></div>
     </div>
     <script>
-    // Motivos e labels
-    const motivos = [
-        { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
-        { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
-        { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
-        { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
-        { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
-        { texto: 'Pedido B2B', label: 'pedido_b2b' },
-        { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
-        { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
-        { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
-        { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
-        { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
-        { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
-        { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
-        { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
-        { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
-        { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
-        { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
-        { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
-        { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
-        { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
-        { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
-        { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
-        { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
-        { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
-        { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
-        { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
-    ];
+    // Estilos extras para grid e caixas
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .actions-grid {
+            display: flex;
+            gap: 24px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .action-box {
+            background: var(--estoca-blue);
+            color: var(--estoca-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0002;
+            padding: 16px 0;
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: background 0.2s, transform 0.2s;
+            border: none;
+            outline: none;
+            display: block;
+        }
+        .action-box:hover {
+            background: var(--estoca-orange);
+            color: var(--estoca-white);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .actions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 32px;
+            justify-content: center;
+        }
+        .action-title {
+            display: block;
+        }
+    `;
+    document.head.appendChild(style);
 
-    // Função para pegar parâmetros da URL
-    function getParam(name) {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(name);
+    // Navegação dos fluxos
+    document.getElementById('acao1').onclick = () => abrirFluxo1();
+    document.getElementById('acao2').onclick = () => abrirFluxo2();
+    document.getElementById('acao3').onclick = () => abrirFluxo3();
+
+    function abrirFluxo1() {
+        const container = document.getElementById('main-container');
+        container.innerHTML = `
+            <h2>Falar sobre um chamado já aberto</h2>
+            <form id="form1" class="form-box">
+                <label for="ticketid">ID do chamado (TicketID):</label>
+                <input type="text" id="ticketid" name="ticketid" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;">
+                <label for="solicitacao">Solicitação:</label>
+                <textarea id="solicitacao" name="solicitacao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                <div class="action-box" id="enviar-chamado">Enviar</div>
+            </form>
+            <div id="msg" class="msg"></div>
+        `;
+        document.getElementById('enviar-chamado').onclick = async function(e) {
+            e.preventDefault();
+            const ticketid = document.getElementById('ticketid').value.trim();
+            const solicitacao = document.getElementById('solicitacao').value.trim();
+            document.getElementById('msg').textContent = '';
+            if (!ticketid || !solicitacao) {
+                document.getElementById('msg').textContent = 'Preencha todos os campos.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            // Enviar para webhook
+            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Falar sobre o chamado aberto: ${ticketid}</div>`;
+        };
+        document.getElementById('form1').onsubmit = async function(e) {
+            e.preventDefault();
+            const ticketid = document.getElementById('ticketid').value.trim();
+            const solicitacao = document.getElementById('solicitacao').value.trim();
+            document.getElementById('msg').textContent = '';
+            if (!ticketid || !solicitacao) {
+                document.getElementById('msg').textContent = 'Preencha todos os campos.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            // Enviar para webhook
+            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Falar sobre o chamado aberto: ${ticketid}</div>`;
+        };
     }
 
-    // Renderizar lista de motivos
-    const ul = document.getElementById('motivos-list');
-    motivos.forEach(motivo => {
-        const li = document.createElement('li');
-        const btn = document.createElement('button');
-        btn.textContent = motivo.texto;
-        btn.onclick = () => enviarMotivo(motivo.label);
-        li.appendChild(btn);
-        ul.appendChild(li);
-    });
-
-    // Enviar motivo para webhook
-    async function enviarMotivo(label) {
-        const ticket_id = getParam('ticket_id');
-        const conversation_id = getParam('conversation_id');
-        const msgDiv = document.getElementById('msg');
-        msgDiv.textContent = '';
-
-        if (!ticket_id || !conversation_id) {
-            msgDiv.textContent = 'Erro: ticket_id ou conversation_id não informado.';
-            msgDiv.className = 'msg error';
-            return;
+    function abrirFluxo2() {
+        // Motivos de contato para pedido de venda
+        const motivosPedido = [
+            { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
+            { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
+            { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+            { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
+            { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
+            { texto: 'Pedido B2B', label: 'pedido_b2b' },
+            { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
+            { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
+            { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+            { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+            { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
+            { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+            { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+            { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
+            { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
+            { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
+            { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
+            { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+            { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
+            { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
+            { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
+            { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
+            { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
+            { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+            { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
+            { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
+        ];
+        const container = document.getElementById('main-container');
+        let motivosHtml = '';
+        motivosPedido.forEach(motivo => {
+            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:16px;">${motivo.texto}</div>`;
+        });
+        container.innerHTML = `
+            <h2>Escolha o motivo de contato:</h2>
+            <div class="actions-grid" id="motivos-pedido-grid">${motivosHtml}</div>
+            <div id="msg" class="msg"></div>
+        `;
+        // Adiciona evento para cada motivo
+        document.querySelectorAll('.action-box[data-label]').forEach(box => {
+            box.onclick = () => abrirFormPedido(box.getAttribute('data-label'), box.textContent);
+        });
+        // Formulário para pedido
+        function abrirFormPedido(motivoLabel, motivoTexto) {
+            container.innerHTML = `
+                <h2>${motivoTexto}</h2>
+                <form id="formPedido" class="form-box">
+                    <label for="orderid">ID do pedido (UUID):</label>
+                    <input type="text" id="orderid" name="orderid" required style="width:100%;margin-bottom:8px;padding:8px;border-radius:4px;border:1px solid #ccc;">
+                    <div id="uuid-alert" class="error" style="display:none;margin-bottom:8px;"></div>
+                    <label for="descricao">Descrição:</label>
+                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                    <div class="action-box" id="enviar-pedido">Enviar</div>
+                </form>
+                <div id="msg" class="msg"></div>
+            `;
+            document.getElementById('enviar-pedido').onclick = async function(e) {
+                e.preventDefault();
+                const orderid = uuidInput.value.trim();
+                const descricao = document.getElementById('descricao').value.trim();
+                if (!validarUUID(orderid)) {
+                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+                    uuidAlert.style.display = 'block';
+                    return;
+                }
+                if (!descricao) {
+                    document.getElementById('msg').textContent = 'Preencha a descrição.';
+                    document.getElementById('msg').className = 'msg error';
+                    return;
+                }
+                // Enviar para webhook
+                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Abrir chamado da seguinte forma:<br>- ID do pedido: ${orderid}<br>- Motivo: ${motivoTexto}<br>- Descrição: ${descricao}</div>`;
+            };
+            // Validação UUID em tempo real
+            const uuidInput = document.getElementById('orderid');
+            const uuidAlert = document.getElementById('uuid-alert');
+            uuidInput.addEventListener('input', function() {
+                if (!validarUUID(uuidInput.value)) {
+                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
+                    uuidAlert.style.display = 'block';
+                } else {
+                    uuidAlert.textContent = '';
+                    uuidAlert.style.display = 'none';
+                }
+            });
+            document.getElementById('formPedido').onsubmit = async function(e) {
+                e.preventDefault();
+                const orderid = uuidInput.value.trim();
+                const descricao = document.getElementById('descricao').value.trim();
+                if (!validarUUID(orderid)) {
+                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+                    uuidAlert.style.display = 'block';
+                    return;
+                }
+                if (!descricao) {
+                    document.getElementById('msg').textContent = 'Preencha a descrição.';
+                    document.getElementById('msg').className = 'msg error';
+                    return;
+                }
+                // Enviar para webhook
+                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Abrir chamado da seguinte forma:<br>- ID do pedido: ${orderid}<br>- Motivo: ${motivoTexto}<br>- Descrição: ${descricao}</div>`;
+            };
         }
+        // Função de validação UUID
+        function validarUUID(uuid) {
+            return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
+        }
+    }
 
-        // Desabilitar todos os botões e mostrar apenas a escolha
-        const container = document.querySelector('.container');
-        container.innerHTML = `<h2>Você escolheu:</h2><div class="escolha" style="font-size:20px;padding:24px 0;color:#0074d9;font-weight:bold;">${motivos.find(m=>m.label===label).texto}</div><div id="msg" class="msg"></div>`;
+    function abrirFluxo3() {
+        // Motivos diversos para demais solicitações
+        const motivosDiversos = [
+            { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
+            { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
+            { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
+            { texto: 'Ruptura/divergência de Estoque', label: 'armazenagem__ruptura/divergência_de_estoque' },
+            { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
+            { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
+            { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
+            { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
+            { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
+            { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
+            { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
+            { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
+            { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
+            { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
+            { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
+            { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
+            { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
+            { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
+            { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
+            { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
+            { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
+        ];
+        const container = document.getElementById('main-container');
+        let motivosHtml = '';
+        motivosDiversos.forEach(motivo => {
+            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:16px;">${motivo.texto}</div>`;
+        });
+        container.innerHTML = `
+            <h2>Escolha o motivo da solicitação:</h2>
+            <div class="actions-grid" id="motivos-diversos-grid">${motivosHtml}</div>
+            <div id="msg" class="msg"></div>
+        `;
+        // Adiciona evento para cada motivo
+        document.querySelectorAll('.action-box[data-label]').forEach(box => {
+            box.onclick = () => abrirFormDiversos(box.getAttribute('data-label'), box.textContent);
+        });
+        // Formulário para demais solicitações
+        function abrirFormDiversos(motivoLabel, motivoTexto) {
+            container.innerHTML = `
+                <h2>${motivoTexto}</h2>
+                <form id="formDiversos" class="form-box">
+                    <label for="descricao">Descreva sua solicitação:</label>
+                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                    <div class="action-box" id="enviar-diversos">Enviar</div>
+                </form>
+                <div id="msg" class="msg"></div>
+            `;
+            document.getElementById('enviar-diversos').onclick = async function(e) {
+                e.preventDefault();
+                const descricao = document.getElementById('descricao').value.trim();
+                if (!descricao) {
+                    document.getElementById('msg').textContent = 'Preencha a descrição.';
+                    document.getElementById('msg').className = 'msg error';
+                    return;
+                }
+                // Enviar para webhook
+                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
+            };
+            document.getElementById('formDiversos').onsubmit = async function(e) {
+                e.preventDefault();
+                const descricao = document.getElementById('descricao').value.trim();
+                if (!descricao) {
+                    document.getElementById('msg').textContent = 'Preencha a descrição.';
+                    document.getElementById('msg').className = 'msg error';
+                    return;
+                }
+                // Enviar para webhook
+                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
+            };
+        }
+    }
 
+    // Função para enviar para webhook
+    async function enviarWebhook(payload) {
+        // Adapte para enviar ticket_id/conversation_id se necessário
         try {
-            const res = await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
+            await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ticket_id,
-                    conversation_id,
-                    motivo: label
-                })
+                body: JSON.stringify(payload)
             });
-            const msgDivNew = document.getElementById('msg');
-            if (res.ok) {
-                msgDivNew.textContent = 'Resposta enviada com sucesso!';
-                msgDivNew.className = 'msg';
-            } else {
-                msgDivNew.textContent = 'Erro ao enviar resposta.';
-                msgDivNew.className = 'msg error';
-            }
-        } catch (e) {
-            const msgDivNew = document.getElementById('msg');
-            msgDivNew.textContent = 'Erro de conexão.';
-            msgDivNew.className = 'msg error';
-        }
+        } catch (e) {}
     }
     </script>
 </body>
