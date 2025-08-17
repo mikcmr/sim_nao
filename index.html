@@ -255,6 +255,10 @@
     document.head.appendChild(style);
 
     // Navegação dos fluxos
+    document.getElementById('acao1').onclick = () => abrirFluxo1();
+    document.getElementById('acao2').onclick = () => abrirFluxo2();
+    document.getElementById('acao3').onclick = () => abrirFluxo3();
+
     // Captura ticket_id e conversation_id da URL
     const urlParams = new URLSearchParams(window.location.search);
     const ticket_id = urlParams.get('ticket_id') || '';
