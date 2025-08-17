@@ -57,86 +57,99 @@
             font-weight: 700;
         }
         button:hover {
-            background: var(--estoca-blue);
+        container.innerHTML = `
+            <h2>Motivo do pedido de venda:</h2>
+            <form id="formPedido" class="form-box">
+                <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
+                <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required style="width:100%;margin-bottom:8px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;" placeholder="Digite para buscar...">
+                <ul id="motivo-pedido-list" style="list-style:none;padding:0;margin:0;max-height:180px;overflow-y:auto;border:1px solid #eee;border-radius:4px;background:#fff;position:absolute;z-index:10;width:calc(100% - 2px);display:none;"></ul>
+                <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
+                <input type="text" id="orderid" name="orderid" required style="width:100%;margin-bottom:8px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;">
+                <div id="uuid-alert" class="error" style="display:none;margin-bottom:8px;font-size:0.95rem;"></div>
+                <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+                <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
+                <div class="action-box" id="enviar-pedido">Enviar</div>
+            </form>
+            <div id="msg" class="msg"></div>
+        `;
+        // Autocomplete motivos
+        const motivoInput = document.getElementById('motivo-pedido');
+        const motivoList = document.getElementById('motivo-pedido-list');
+        let motivoSelecionado = null;
+        motivoInput.addEventListener('input', function() {
+            const val = motivoInput.value.toLowerCase();
+            motivoList.innerHTML = '';
+            if (!val) {
+                motivoList.style.display = 'none';
+                motivoSelecionado = null;
+                return;
+            }
+            const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
+            filtrados.forEach(motivo => {
+                const li = document.createElement('li');
+                li.textContent = motivo.texto;
+                li.style.padding = '8px';
+                li.style.cursor = 'pointer';
+                li.onmousedown = function(e) {
+                    motivoInput.value = motivo.texto;
+                    motivoSelecionado = motivo;
+                    motivoList.style.display = 'none';
+                };
+                motivoList.appendChild(li);
+            });
+            motivoList.style.display = filtrados.length ? 'block' : 'none';
+        });
+        motivoInput.addEventListener('focus', function() {
+            if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+        });
+        document.addEventListener('click', function(e) {
+            if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+                motivoList.style.display = 'none';
+            }
+        });
+        // Validação UUID em tempo real
+        const uuidInput = document.getElementById('orderid');
+        const uuidAlert = document.getElementById('uuid-alert');
+        uuidInput.addEventListener('input', function() {
+            if (!validarUUID(uuidInput.value)) {
+                uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
+                uuidAlert.style.display = 'block';
+            } else {
+                uuidAlert.textContent = '';
+                uuidAlert.style.display = 'none';
+            }
+        });
+        document.getElementById('enviar-pedido').onclick = async function(e) {
+            e.preventDefault();
+            const orderid = uuidInput.value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const motivo = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
+            if (!motivo) {
+                document.getElementById('msg').textContent = 'Selecione um motivo válido.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            if (!validarUUID(orderid)) {
+                uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+                uuidAlert.style.display = 'block';
+                return;
+            }
+            if (!descricao) {
+                document.getElementById('msg').textContent = 'Preencha a descrição.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            // Enviar para webhook
+            await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivo.label, motivo_texto: motivo.texto, descricao, ticket_id, conversation_id });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Pedido: ${orderid}<br>Motivo: ${motivo.texto}<br>Descrição: ${descricao}</div>`;
+        };
+        document.getElementById('formPedido').onsubmit = async function(e) {
+            e.preventDefault();
+            document.getElementById('enviar-pedido').click();
+        };
+        function validarUUID(uuid) {
+            return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
         }
-        .msg {
-            margin-top: 24px;
-            color: var(--estoca-blue);
-            font-weight: bold;
-        }
-        .error {
-            color: var(--estoca-orange);
-        }
-        .escolha {
-            color: var(--estoca-orange);
-        }
-        /* Menu inicial estilo caixa/card */
-        .menu-card-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            margin-top: 32px;
-            align-items: center;
-        }
-        .menu-card {
-            display: flex;
-            align-items: center;
-            background: var(--estoca-blue);
-            color: var(--estoca-white);
-            border-radius: 14px;
-            box-shadow: 0 4px 24px #0002;
-            padding: 12px 14px;
-            min-width: 180px;
-            max-width: 260px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
-            margin-bottom: 0;
-            border: none;
-            outline: none;
-        }
-        .menu-card:hover {
-            background: var(--estoca-dark-blue);
-            box-shadow: 0 8px 32px #0074d966;
-            transform: translateY(-2px) scale(1.03);
-        }
-        .menu-card .menu-icon {
-            margin-right: 8px;
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-card .action-title {
-            flex: 1;
-            text-align: left;
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        .action-title {
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        /* Botões simples para motivos e envio */
-        .motivo-btn, .enviar-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            background: var(--estoca-orange);
-            color: var(--estoca-white);
-            font-size: 16px;
-            font-family: 'Montserrat', Arial, sans-serif;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: 700;
-            margin-bottom: 12px;
         }
         .motivo-btn:hover, .enviar-btn:hover {
             background: var(--estoca-blue);
@@ -407,55 +420,75 @@
             { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
         ].sort((a, b) => a.texto.localeCompare(b.texto));
         const container = document.getElementById('main-container');
-        let motivosHtml = '';
-        motivosDiversos.forEach(motivo => {
-            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:10px;font-size:0.95rem;">${motivo.texto}</div>`;
-        });
         container.innerHTML = `
             <h2>Motivo da solicitação:</h2>
-            <div class="actions-grid" id="motivos-diversos-grid">${motivosHtml}</div>
+            <form id="formDiversos" class="form-box">
+                <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
+                <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required style="width:100%;margin-bottom:8px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;" placeholder="Digite para buscar...">
+                <ul id="motivo-diverso-list" style="list-style:none;padding:0;margin:0;max-height:180px;overflow-y:auto;border:1px solid #eee;border-radius:4px;background:#fff;position:absolute;z-index:10;width:calc(100% - 2px);display:none;"></ul>
+                <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+                <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
+                <div class="action-box" id="enviar-diversos">Enviar</div>
+            </form>
             <div id="msg" class="msg"></div>
         `;
-        // Adiciona evento para cada motivo
-        document.querySelectorAll('.action-box[data-label]').forEach(box => {
-            box.onclick = () => abrirFormDiversos(box.getAttribute('data-label'), box.textContent);
+        // Autocomplete motivos
+        const motivoInput = document.getElementById('motivo-diverso');
+        const motivoList = document.getElementById('motivo-diverso-list');
+        let motivoSelecionado = null;
+        motivoInput.addEventListener('input', function() {
+            const val = motivoInput.value.toLowerCase();
+            motivoList.innerHTML = '';
+            if (!val) {
+                motivoList.style.display = 'none';
+                motivoSelecionado = null;
+                return;
+            }
+            const filtrados = motivosDiversos.filter(m => m.texto.toLowerCase().includes(val));
+            filtrados.forEach(motivo => {
+                const li = document.createElement('li');
+                li.textContent = motivo.texto;
+                li.style.padding = '8px';
+                li.style.cursor = 'pointer';
+                li.onmousedown = function(e) {
+                    motivoInput.value = motivo.texto;
+                    motivoSelecionado = motivo;
+                    motivoList.style.display = 'none';
+                };
+                motivoList.appendChild(li);
+            });
+            motivoList.style.display = filtrados.length ? 'block' : 'none';
         });
-        // Formulário para demais solicitações
-        function abrirFormDiversos(motivoLabel, motivoTexto) {
-            container.innerHTML = `
-                <h2 style="font-size:1rem;line-height:1.2;">${motivoTexto}</h2>
-                <form id="formDiversos" class="form-box">
-                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
-                    <div class="action-box" id="enviar-diversos">Enviar</div>
-                </form>
-                <div id="msg" class="msg"></div>
-            `;
-            document.getElementById('enviar-diversos').onclick = async function(e) {
-                e.preventDefault();
-                const descricao = document.getElementById('descricao').value.trim();
-                if (!descricao) {
-                    document.getElementById('msg').textContent = 'Preencha a descrição.';
-                    document.getElementById('msg').className = 'msg error';
-                    return;
-                }
-                // Enviar para webhook
-                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
-            };
-            document.getElementById('formDiversos').onsubmit = async function(e) {
-                e.preventDefault();
-                const descricao = document.getElementById('descricao').value.trim();
-                if (!descricao) {
-                    document.getElementById('msg').textContent = 'Preencha a descrição.';
-                    document.getElementById('msg').className = 'msg error';
-                    return;
-                }
-                // Enviar para webhook
-                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
-            };
-        }
+        motivoInput.addEventListener('focus', function() {
+            if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+        });
+        document.addEventListener('click', function(e) {
+            if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+                motivoList.style.display = 'none';
+            }
+        });
+        document.getElementById('enviar-diversos').onclick = async function(e) {
+            e.preventDefault();
+            const descricao = document.getElementById('descricao').value.trim();
+            const motivo = motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
+            if (!motivo) {
+                document.getElementById('msg').textContent = 'Selecione um motivo válido.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            if (!descricao) {
+                document.getElementById('msg').textContent = 'Preencha a descrição.';
+                document.getElementById('msg').className = 'msg error';
+                return;
+            }
+            // Enviar para webhook
+            await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivo.label, motivo_texto: motivo.texto, descricao, ticket_id, conversation_id });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivo.texto}<br>Descrição: ${descricao}</div>`;
+        };
+        document.getElementById('formDiversos').onsubmit = async function(e) {
+            e.preventDefault();
+            document.getElementById('enviar-diversos').click();
+        };
     }
 
     // Função para enviar para webhook
