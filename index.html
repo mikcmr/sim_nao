@@ -32,6 +32,9 @@
             margin-top: 0;
             color: var(--estoca-blue);
             font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
         }
         ul {
             list-style: none;
@@ -80,13 +83,13 @@
             align-items: center;
             background: var(--estoca-blue);
             color: var(--estoca-white);
-            border-radius: 18px;
+            border-radius: 14px;
             box-shadow: 0 4px 24px #0002;
-            padding: 28px 32px;
-            min-width: 320px;
-            max-width: 400px;
-            font-size: 20px;
-            font-weight: 700;
+            padding: 12px 14px;
+            min-width: 180px;
+            max-width: 260px;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
             margin-bottom: 0;
@@ -99,9 +102,9 @@
             transform: translateY(-2px) scale(1.03);
         }
         .menu-card .menu-icon {
-            margin-right: 18px;
-            width: 38px;
-            height: 38px;
+            margin-right: 8px;
+            width: 22px;
+            height: 22px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -110,11 +113,15 @@
         .menu-card .action-title {
             flex: 1;
             text-align: left;
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.2;
         }
         .action-title {
             display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.2;
         }
         /* Botões simples para motivos e envio */
         .motivo-btn, .enviar-btn {
@@ -133,6 +140,36 @@
         }
         .motivo-btn:hover, .enviar-btn:hover {
             background: var(--estoca-blue);
+        }
+        .action-box {
+            background: var(--estoca-blue);
+            color: var(--estoca-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0002;
+            padding: 8px 0;
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.2s, transform 0.2s;
+            border: none;
+            outline: none;
+            display: block;
+        }
+        .action-box:hover {
+            background: var(--estoca-orange);
+            color: var(--estoca-white);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .actions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 32px;
+            justify-content: center;
         }
     </style>
 </head>
@@ -186,14 +223,14 @@
             color: var(--estoca-white);
             border-radius: 8px;
             box-shadow: 0 2px 8px #0002;
-            padding: 16px 0;
+            padding: 8px 0;
             width: 100%;
             max-width: 100%;
             text-align: center;
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             transition: background 0.2s, transform 0.2s;
             border: none;
             outline: none;
@@ -218,19 +255,20 @@
     document.head.appendChild(style);
 
     // Navegação dos fluxos
-    document.getElementById('acao1').onclick = () => abrirFluxo1();
-    document.getElementById('acao2').onclick = () => abrirFluxo2();
-    document.getElementById('acao3').onclick = () => abrirFluxo3();
+    // Captura ticket_id e conversation_id da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticket_id = urlParams.get('ticket_id') || '';
+    const conversation_id = urlParams.get('conversation_id') || '';
 
     function abrirFluxo1() {
         const container = document.getElementById('main-container');
         container.innerHTML = `
-            <h2>Falar sobre um chamado já aberto</h2>
+            <h2>Chamado já aberto</h2>
             <form id="form1" class="form-box">
-                <label for="ticketid">ID do chamado (TicketID):</label>
-                <input type="text" id="ticketid" name="ticketid" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;">
-                <label for="solicitacao">Solicitação:</label>
-                <textarea id="solicitacao" name="solicitacao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
+                <input type="text" id="ticketid" name="ticketid" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;">
+                <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
+                <textarea id="solicitacao" name="solicitacao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
                 <div class="action-box" id="enviar-chamado">Enviar</div>
             </form>
             <div id="msg" class="msg"></div>
@@ -246,8 +284,8 @@
                 return;
             }
             // Enviar para webhook
-            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao });
-            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Falar sobre o chamado aberto: ${ticketid}</div>`;
+            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao, ticket_id, conversation_id });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Chamado: ${ticketid}</div>`;
         };
         document.getElementById('form1').onsubmit = async function(e) {
             e.preventDefault();
@@ -260,8 +298,8 @@
                 return;
             }
             // Enviar para webhook
-            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao });
-            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Falar sobre o chamado aberto: ${ticketid}</div>`;
+            await enviarWebhook({ tipo: 'chamado_aberto', ticketid, solicitacao, ticket_id, conversation_id });
+            container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Chamado: ${ticketid}</div>`;
         };
     }
 
@@ -298,10 +336,10 @@
         const container = document.getElementById('main-container');
         let motivosHtml = '';
         motivosPedido.forEach(motivo => {
-            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:16px;">${motivo.texto}</div>`;
+            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:10px;font-size:0.95rem;">${motivo.texto}</div>`;
         });
         container.innerHTML = `
-            <h2>Escolha o motivo de contato:</h2>
+            <h2>Motivo do pedido de venda:</h2>
             <div class="actions-grid" id="motivos-pedido-grid">${motivosHtml}</div>
             <div id="msg" class="msg"></div>
         `;
@@ -312,13 +350,13 @@
         // Formulário para pedido
         function abrirFormPedido(motivoLabel, motivoTexto) {
             container.innerHTML = `
-                <h2>${motivoTexto}</h2>
+                <h2 style="font-size:1rem;line-height:1.2;">${motivoTexto}</h2>
                 <form id="formPedido" class="form-box">
-                    <label for="orderid">ID do pedido (UUID):</label>
-                    <input type="text" id="orderid" name="orderid" required style="width:100%;margin-bottom:8px;padding:8px;border-radius:4px;border:1px solid #ccc;">
-                    <div id="uuid-alert" class="error" style="display:none;margin-bottom:8px;"></div>
-                    <label for="descricao">Descrição:</label>
-                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                    <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
+                    <input type="text" id="orderid" name="orderid" required style="width:100%;margin-bottom:8px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;">
+                    <div id="uuid-alert" class="error" style="display:none;margin-bottom:8px;font-size:0.95rem;"></div>
+                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
                     <div class="action-box" id="enviar-pedido">Enviar</div>
                 </form>
                 <div id="msg" class="msg"></div>
@@ -338,8 +376,8 @@
                     return;
                 }
                 // Enviar para webhook
-                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Abrir chamado da seguinte forma:<br>- ID do pedido: ${orderid}<br>- Motivo: ${motivoTexto}<br>- Descrição: ${descricao}</div>`;
+                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Pedido: ${orderid}<br>Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
             };
             // Validação UUID em tempo real
             const uuidInput = document.getElementById('orderid');
@@ -368,8 +406,8 @@
                     return;
                 }
                 // Enviar para webhook
-                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Abrir chamado da seguinte forma:<br>- ID do pedido: ${orderid}<br>- Motivo: ${motivoTexto}<br>- Descrição: ${descricao}</div>`;
+                await enviarWebhook({ tipo: 'pedido_venda', orderid, motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
+                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Pedido: ${orderid}<br>Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
             };
         }
         // Função de validação UUID
@@ -406,10 +444,10 @@
         const container = document.getElementById('main-container');
         let motivosHtml = '';
         motivosDiversos.forEach(motivo => {
-            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:16px;">${motivo.texto}</div>`;
+            motivosHtml += `<div class="action-box" data-label="${motivo.label}" style="margin-bottom:10px;font-size:0.95rem;">${motivo.texto}</div>`;
         });
         container.innerHTML = `
-            <h2>Escolha o motivo da solicitação:</h2>
+            <h2>Motivo da solicitação:</h2>
             <div class="actions-grid" id="motivos-diversos-grid">${motivosHtml}</div>
             <div id="msg" class="msg"></div>
         `;
@@ -420,10 +458,10 @@
         // Formulário para demais solicitações
         function abrirFormDiversos(motivoLabel, motivoTexto) {
             container.innerHTML = `
-                <h2>${motivoTexto}</h2>
+                <h2 style="font-size:1rem;line-height:1.2;">${motivoTexto}</h2>
                 <form id="formDiversos" class="form-box">
-                    <label for="descricao">Descreva sua solicitação:</label>
-                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;"></textarea>
+                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+                    <textarea id="descricao" name="descricao" required style="width:100%;margin-bottom:10px;padding:7px;border-radius:4px;border:1px solid #ccc;font-size:0.95rem;"></textarea>
                     <div class="action-box" id="enviar-diversos">Enviar</div>
                 </form>
                 <div id="msg" class="msg"></div>
@@ -437,7 +475,7 @@
                     return;
                 }
                 // Enviar para webhook
-                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
                 container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
             };
             document.getElementById('formDiversos').onsubmit = async function(e) {
@@ -449,7 +487,7 @@
                     return;
                 }
                 // Enviar para webhook
-                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao });
+                await enviarWebhook({ tipo: 'demais_solicitacoes', motivo: motivoLabel, motivo_texto: motivoTexto, descricao, ticket_id, conversation_id });
                 container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">Motivo: ${motivoTexto}<br>Descrição: ${descricao}</div>`;
             };
         }
