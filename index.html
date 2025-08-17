@@ -1,607 +1,633 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <title>Motivo de Contato</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --estoca-blue: #0074d9;
-            --estoca-dark-blue: #005fa3;
-            --estoca-orange: #ff6600;
-            --estoca-bg: #f7f7f7;
-            --estoca-white: #fff;
-            --estoca-black: #222;
-        }
+  <meta charset="UTF-8" />
+  <title>Motivo de Contato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --estoca-blue: #0074d9;
+      --estoca-dark-blue: #005fa3;
+      --estoca-orange: #ff6600;
+      --estoca-bg: #f7f7f7;
+      --estoca-white: #fff;
+      --estoca-black: #222;
+    }
 
-        body {
-            font-family: 'Montserrat', Arial, sans-serif;
-            background: var(--estoca-bg);
-            margin: 0;
-            padding: 0;
-            color: var(--estoca-black);
-        }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: var(--estoca-bg);
+      margin: 0;
+      padding: 0;
+      color: var(--estoca-black);
+    }
 
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background: var(--estoca-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #0001;
-            padding: 32px;
-        }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: var(--estoca-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0001;
+      padding: 32px;
+      position: relative;
+    }
 
-        h2 {
-            margin-top: 0;
-            color: var(--estoca-blue);
-            font-weight: 700;
-            font-size: 1.1rem;
-            line-height: 1.2;
-            letter-spacing: 0.01em;
-        }
+    h2 {
+      margin-top: 0;
+      color: var(--estoca-blue);
+      font-weight: 700;
+      font-size: 1.1rem;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-        li {
-            margin-bottom: 12px;
-        }
+    li {
+      margin-bottom: 12px;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            background: var(--estoca-orange);
-            color: var(--estoca-white);
-            font-size: 16px;
-            font-family: 'Montserrat', Arial, sans-serif;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: 700;
-        }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      background: var(--estoca-orange);
+      color: var(--estoca-white);
+      font-size: 16px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 700;
+    }
 
-        button:hover,
-        .motivo-btn:hover,
-        .enviar-btn:hover {
-            background: var(--estoca-blue);
-        }
+    button:hover,
+    .motivo-btn:hover,
+    .enviar-btn:hover {
+      background: var(--estoca-blue);
+    }
 
-        /* Menu Cards Grid */
-        .menu-card-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
+    /* Menu Cards Grid */
+    .menu-card-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
 
-        .menu-card {
-            background: var(--estoca-blue);
-            color: var(--estoca-white);
-            width: 300px;
-            border-radius: 8px;
-            padding: 20px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: background-color 0.3s, transform 0.2s;
-            user-select: none;
-        }
+    .menu-card {
+      background: var(--estoca-blue);
+      color: var(--estoca-white);
+      width: 300px;
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: background-color 0.3s, transform 0.2s;
+      user-select: none;
+    }
 
-        .menu-card:hover {
-            background: var(--estoca-orange);
-            transform: translateY(-3px);
-        }
+    .menu-card:hover {
+      background: var(--estoca-orange);
+      transform: translateY(-3px);
+    }
 
-        .menu-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            background: rgba(255 255 255 / 0.2);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+    .menu-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: rgba(255 255 255 / 0.2);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
-        .action-title {
-            font-weight: 600;
-            font-size: 1rem;
-        }
+    .action-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
 
-        .msg {
-            margin-top: 16px;
-        }
+    .msg {
+      margin-top: 16px;
+    }
 
-        .msg.error {
-            color: #d00;
-            font-weight: 600;
-        }
+    .msg.error {
+      color: #d00;
+      font-weight: 600;
+    }
 
-        /* Action Boxes */
-        .action-box {
-            background: var(--estoca-blue);
-            color: var(--estoca-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #0002;
-            padding: 10px 0;
-            width: 100%;
-            text-align: center;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 8px;
-            transition: background 0.2s, transform 0.2s;
-            border: none;
-            outline: none;
-            display: block;
-            user-select: none;
-        }
+    /* Action Boxes */
+    .action-box {
+      background: var(--estoca-blue);
+      color: var(--estoca-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0002;
+      padding: 10px 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      outline: none;
+      display: block;
+      user-select: none;
+    }
 
-        .action-box:hover {
-            background: var(--estoca-orange);
-            color: var(--estoca-white);
-            transform: translateY(-2px) scale(1.02);
-        }
+    .action-box:hover {
+      background: var(--estoca-orange);
+      color: var(--estoca-white);
+      transform: translateY(-2px) scale(1.02);
+    }
 
-        /* Autocomplete lists */
-        ul.autocomplete-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 180px;
-            overflow-y: auto;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            background: #fff;
-            position: absolute;
-            z-index: 10;
-            width: calc(100% - 2px);
-            display: none;
-        }
+    /* Autocomplete lists */
+    ul.autocomplete-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      background: #fff;
+      position: absolute;
+      z-index: 10;
+      width: calc(100% - 2px);
+      display: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
 
-        ul.autocomplete-list li {
-            padding: 8px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
+    ul.autocomplete-list li {
+      padding: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
 
-        ul.autocomplete-list li:last-child {
-            border-bottom: none;
-        }
+    ul.autocomplete-list li:last-child {
+      border-bottom: none;
+    }
 
-        ul.autocomplete-list li:hover {
-            background-color: var(--estoca-orange);
-            color: var(--estoca-white);
-        }
+    ul.autocomplete-list li:hover {
+      background-color: var(--estoca-orange);
+      color: var(--estoca-white);
+    }
 
-        /* Input fields and textarea */
-        input[type="text"],
-        textarea {
-            width: 100%;
-            margin-bottom: 8px;
-            padding: 7px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 0.95rem;
-            font-family: 'Montserrat', Arial, sans-serif;
-            box-sizing: border-box;
-        }
+    /* Input fields and textarea */
+    input[type="text"],
+    textarea {
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 7px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', Arial, sans-serif;
+      box-sizing: border-box;
+    }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
 
-        /* For relative positioning of autocomplete container */
-        .autocomplete-wrapper {
-            position: relative;
-            width: 100%;
-        }
-    </style>
+    /* For relative positioning of autocomplete container */
+    .autocomplete-wrapper {
+      position: relative;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="main-container">
-        <h2>Qual ação você quer fazer?</h2>
-        <div class="menu-card-grid">
-            <div class="menu-card" id="acao1">
-                <span class="menu-icon"> 
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
-                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
-                    </svg>
-                </span>
-                <span class="action-title">Falar sobre um chamado já aberto</span>
-            </div>
-            <div class="menu-card" id="acao2">
-                <span class="menu-icon"> 
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
-                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
-                    </svg>
-                </span>
-                <span class="action-title">Solicitação sobre um pedido de venda</span>
-            </div>
-            <div class="menu-card" id="acao3">
-                <span class="menu-icon"> 
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2"/>
-                        <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5"/>
-                    </svg>
-                </span>
-                <span class="action-title">Demais solicitações</span>
-            </div>
-        </div>
-        <div id="msg" class="msg"></div>
+  <div class="container" id="main-container">
+    <h2>Qual ação você quer fazer?</h2>
+    <div class="menu-card-grid">
+      <div class="menu-card" id="acao1">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Falar sobre um chamado já aberto</span>
+      </div>
+      <div class="menu-card" id="acao2">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Solicitação sobre um pedido de venda</span>
+      </div>
+      <div class="menu-card" id="acao3">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Demais solicitações</span>
+      </div>
     </div>
+    <div id="msg" class="msg"></div>
+  </div>
 
-    <script>
-        // Captura ticket_id e conversation_id da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const ticket_id = urlParams.get('ticket_id') || '';
-        const conversation_id = urlParams.get('conversation_id') || '';
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticket_id = urlParams.get('ticket_id') || '';
+    const conversation_id = urlParams.get('conversation_id') || '';
+    const container = document.getElementById('main-container');
 
-        // Verifica se o ticket_id já foi respondido para evitar reenvio
-        const TICKET_KEY = 'eva_ticket_' + ticket_id;
-        const container = document.getElementById('main-container');
+    const TICKET_KEY = 'eva_ticket_' + ticket_id;
+    if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
+      container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+    } else {
+      document.getElementById('acao1').onclick = abrirFluxo1;
+      document.getElementById('acao2').onclick = abrirFluxo2;
+      document.getElementById('acao3').onclick = abrirFluxo3;
+    }
 
-        if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
-            container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+    function validarUUID(uuid) {
+      return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
+    }
+
+    async function enviarWebhook(payload) {
+      try {
+        await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (payload.ticket_id) {
+          localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
+        }
+      } catch (e) {
+        console.error('Erro ao enviar webhook:', e);
+      }
+    }
+
+    function abrirFluxo1() {
+      container.innerHTML = `
+        <h2>Chamado já aberto</h2>
+        <form id="form1" class="form-box" novalidate>
+          <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
+          <input type="text" id="ticketid" name="ticketid" required />
+          <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
+          <textarea id="solicitacao" name="solicitacao" required></textarea>
+          <div class="action-box" id="enviar-chamado">Enviar</div>
+        </form>
+        <div id="msg" class="msg"></div>
+      `;
+
+      const enviarBtn = document.getElementById('enviar-chamado');
+      const form = document.getElementById('form1');
+      const msg = document.getElementById('msg');
+
+      enviarBtn.onclick = async e => {
+        e.preventDefault();
+
+        const ticketid = form.ticketid.value.trim();
+        const solicitacao = form.solicitacao.value.trim();
+
+        msg.textContent = '';
+        msg.className = 'msg';
+
+        if (!ticketid) {
+          msg.textContent = 'Preencha o TicketID.';
+          msg.classList.add('error');
+          return;
+        }
+        if (!solicitacao) {
+          msg.textContent = 'Preencha a solicitação.';
+          msg.classList.add('error');
+          return;
+        }
+
+        await enviarWebhook({
+          tipo: 'chamado_aberto',
+          ticketid,
+          solicitacao,
+          ticket_id,
+          conversation_id,
+        });
+
+        container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Solicitação: ${solicitacao}</div>`;
+      };
+
+      form.onsubmit = e => {
+        e.preventDefault();
+        enviarBtn.click();
+      };
+    }
+
+    function abrirFluxo2() {
+      const motivosPedido = [
+        { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
+        { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
+        { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+        { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
+        { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
+        { texto: 'Pedido B2B', label: 'pedido_b2b' },
+        { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
+        { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
+        { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+        { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+        { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
+        { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+        { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+        { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
+        { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
+        { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
+        { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
+        { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+        { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
+        { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
+        { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
+        { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
+        { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
+        { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+        { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
+        { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
+      ].sort((a, b) => a.texto.localeCompare(b.texto));
+
+      container.innerHTML = `
+        <h2>Motivo do pedido de venda:</h2>
+        <form id="formPedido" class="form-box" novalidate style="position:relative;">
+          <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
+            <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
+          </div>
+          <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
+          <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+          <div id="uuid-alert" class="msg error" style="display:none;"></div>
+          <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+          <textarea id="descricao" name="descricao" required></textarea>
+          <div class="action-box" id="enviar-pedido">Enviar</div>
+        </form>
+        <div id="msg" class="msg"></div>
+      `;
+
+      const motivoInput = document.getElementById('motivo-pedido');
+      const motivoList = document.getElementById('motivo-pedido-list');
+      const uuidInput = document.getElementById('orderid');
+      const uuidAlert = document.getElementById('uuid-alert');
+      let motivoSelecionado = null;
+
+      motivoInput.addEventListener('input', () => {
+        const val = motivoInput.value.toLowerCase();
+        motivoList.innerHTML = '';
+
+        if (!val) {
+          motivoList.style.display = 'none';
+          motivoSelecionado = null;
+          return;
+        }
+
+        const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
+
+        filtrados.forEach(motivo => {
+          const li = document.createElement('li');
+          li.textContent = motivo.texto;
+          li.onclick = () => {
+            motivoInput.value = motivo.texto;
+            motivoSelecionado = motivo;
+            motivoList.style.display = 'none';
+          };
+          motivoList.appendChild(li);
+        });
+        motivoList.style.display = filtrados.length ? 'block' : 'none';
+      });
+
+      motivoInput.addEventListener('focus', () => {
+        if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+      });
+
+      document.addEventListener('click', e => {
+        if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+          motivoList.style.display = 'none';
+        }
+      });
+
+      uuidInput.addEventListener('input', () => {
+        if (!validarUUID(uuidInput.value.trim())) {
+          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
+          uuidAlert.style.display = 'block';
         } else {
-            // Define eventos dos cards do menu
-            document.getElementById('acao1').onclick = abrirFluxo1;
-            document.getElementById('acao2').onclick = abrirFluxo2;
-            document.getElementById('acao3').onclick = abrirFluxo3;
+          uuidAlert.textContent = '';
+          uuidAlert.style.display = 'none';
+        }
+      });
+
+      const enviarBtn = document.getElementById('enviar-pedido');
+      const form = document.getElementById('formPedido');
+      const msg = document.getElementById('msg');
+
+      enviarBtn.onclick = async e => {
+        e.preventDefault();
+
+        const orderid = uuidInput.value.trim();
+        const descricao = form.descricao.value.trim();
+        const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
+
+        msg.textContent = '';
+        msg.className = 'msg';
+
+        if (!motivoAtual) {
+          msg.textContent = 'Selecione um motivo válido.';
+          msg.classList.add('error');
+          return;
         }
 
-        // Função para validar UUID
-        function validarUUID(uuid) {
-            return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
+        if (!validarUUID(orderid)) {
+          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+          uuidAlert.style.display = 'block';
+          return;
         }
 
-        // Função para enviar dados para webhook
-        async function enviarWebhook(payload) {
-            try {
-                await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (payload.ticket_id) {
-                    localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
-                }
-            } catch (e) {
-                console.error('Erro ao enviar webhook:', e);
-            }
+        if (!descricao) {
+          msg.textContent = 'Preencha a descrição.';
+          msg.classList.add('error');
+          return;
         }
 
-        // --- Fluxo 1: Chamado já aberto ---
-        function abrirFluxo1() {
-            container.innerHTML = `
-                <h2>Chamado já aberto</h2>
-                <form id="form1" class="form-box" novalidate>
-                    <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
-                    <input type="text" id="ticketid" name="ticketid" required />
-                    <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
-                    <textarea id="solicitacao" name="solicitacao" required></textarea>
-                    <div class="action-box" id="enviar-chamado">Enviar</div>
-                </form>
-                <div id="msg" class="msg"></div>
-            `;
+        await enviarWebhook({
+          tipo: 'pedido_venda',
+          orderid,
+          motivo: motivoAtual.label,
+          motivo_texto: motivoAtual.texto,
+          descricao,
+          ticket_id,
+          conversation_id,
+        });
 
-            const enviarBtn = document.getElementById('enviar-chamado');
-            const form = document.getElementById('form1');
-            const msg = document.getElementById('msg');
+        container.innerHTML = `
+          <h2>Solicitação enviada!</h2>
+          <div class="msg">
+            Pedido: ${orderid}<br>
+            Motivo: ${motivoAtual.texto}<br>
+            Descrição: ${descricao}
+          </div>
+        `;
+      };
 
-            enviarBtn.onclick = async e => {
-                e.preventDefault();
+      form.onsubmit = e => {
+        e.preventDefault();
+        enviarBtn.click();
+      };
+    }
 
-                const ticketid = form.ticketid.value.trim();
-                const solicitacao = form.solicitacao.value.trim();
+    function abrirFluxo3() {
+      // Mantém essa função igual ao código anterior ou ajuste conforme necessário...
+      const motivosDiversos = [
+        { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
+        { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
+        { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
+        { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
+        { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
+        { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
+        { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
+        { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
+        { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
+        { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
+        { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
+        { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
+        { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
+        { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
+        { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
+        { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
+        { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
+        { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
+        { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
+        { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
+      ].sort((a,b) => a.texto.localeCompare(b.texto));
 
-                msg.textContent = '';
-                msg.className = 'msg';
+      container.innerHTML = `
+        <h2>Motivo da solicitação:</h2>
+        <form id="formDiversos" class="form-box" novalidate style="position:relative;">
+          <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
+            <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
+          </div>
+          <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+          <textarea id="descricao" name="descricao" required></textarea>
+          <div class="action-box" id="enviar-diversos">Enviar</div>
+        </form>
+        <div id="msg" class="msg"></div>
+      `;
 
-                if (!ticketid) {
-                    msg.textContent = 'Preencha o TicketID.';
-                    msg.classList.add('error');
-                    return;
-                }
-                if (!solicitacao) {
-                    msg.textContent = 'Preencha a solicitação.';
-                    msg.classList.add('error');
-                    return;
-                }
+      const motivoInput = document.getElementById('motivo-diverso');
+      const motivoList = document.getElementById('motivo-diverso-list');
+      let motivoSelecionado = null;
 
-                await enviarWebhook({
-                    tipo: 'chamado_aberto',
-                    ticketid,
-                    solicitacao,
-                    ticket_id,
-                    conversation_id
-                });
+      motivoInput.addEventListener('input', () => {
+        const val = motivoInput.value.toLowerCase();
+        motivoList.innerHTML = '';
 
-                container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Solicitação: ${solicitacao}</div>`;
-            };
-
-            form.onsubmit = e => {
-                e.preventDefault();
-                enviarBtn.click();
-            };
+        if (!val) {
+          motivoList.style.display = 'none';
+          motivoSelecionado = null;
+          return;
         }
 
-        // --- Fluxo 2: Pedido de venda ---
-        function abrirFluxo2() {
-            // Motivos de pedido (exemplo, pode ajustar conforme necessário)
-            const motivosPedido = [
-                { texto: 'Pedido com produto danificado', label: 'pedido_produto_danificado' },
-                { texto: 'Pedido atrasado', label: 'pedido_atrasado' },
-                { texto: 'Pedido cancelado', label: 'pedido_cancelado' },
-                { texto: 'Solicitar alteração no pedido', label: 'pedido_alteracao' }
-            ].sort((a, b) => a.texto.localeCompare(b.texto));
+        const filtrados = motivosDiversos.filter(m =>
+          m.texto.toLowerCase().includes(val)
+        );
 
-            container.innerHTML = `
-                <h2>Motivo do pedido de venda:</h2>
-                <form id="formPedido" class="form-box" novalidate style="position:relative;">
-                    <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
-                        <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
-                    </div>
-                    <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
-                    <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-                    <div id="uuid-alert" class="msg error" style="display:none;"></div>
-                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-                    <textarea id="descricao" name="descricao" required></textarea>
-                    <div class="action-box" id="enviar-pedido">Enviar</div>
-                </form>
-                <div id="msg" class="msg"></div>
-            `;
+        filtrados.forEach(motivo => {
+          const li = document.createElement('li');
+          li.textContent = motivo.texto;
+          li.onclick = () => {
+            motivoInput.value = motivo.texto;
+            motivoSelecionado = motivo;
+            motivoList.style.display = 'none';
+          };
+          motivoList.appendChild(li);
+        });
 
-            const motivoInput = document.getElementById('motivo-pedido');
-            const motivoList = document.getElementById('motivo-pedido-list');
-            const uuidInput = document.getElementById('orderid');
-            const uuidAlert = document.getElementById('uuid-alert');
-            let motivoSelecionado = null;
+        motivoList.style.display = filtrados.length ? 'block' : 'none';
+      });
 
-            // Autocomplete motivos
-            motivoInput.addEventListener('input', () => {
-                const val = motivoInput.value.toLowerCase();
-                motivoList.innerHTML = '';
+      motivoInput.addEventListener('focus', () => {
+        if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+      });
 
-                if (!val) {
-                    motivoList.style.display = 'none';
-                    motivoSelecionado = null;
-                    return;
-                }
+      document.addEventListener('click', e => {
+        if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+          motivoList.style.display = 'none';
+        }
+      });
 
-                const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
+      const enviarBtn = document.getElementById('enviar-diversos');
+      const form = document.getElementById('formDiversos');
+      const msg = document.getElementById('msg');
 
-                filtrados.forEach(motivo => {
-                    const li = document.createElement('li');
-                    li.textContent = motivo.texto;
-                    li.onclick = () => {
-                        motivoInput.value = motivo.texto;
-                        motivoSelecionado = motivo;
-                        motivoList.style.display = 'none';
-                    };
-                    motivoList.appendChild(li);
-                });
-                motivoList.style.display = filtrados.length ? 'block' : 'none';
-            });
+      enviarBtn.onclick = async e => {
+        e.preventDefault();
 
-            // Abrir a lista se já tiver valor
-            motivoInput.addEventListener('focus', () => {
-                if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
-            });
+        const descricao = form.descricao.value.trim();
+        const motivoAtual =
+          motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
 
-            // Fechar lista ao clicar fora
-            document.addEventListener('click', (e) => {
-                if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
-                    motivoList.style.display = 'none';
-                }
-            });
+        msg.textContent = '';
+        msg.className = 'msg';
 
-            // Validação do UUID em tempo real
-            uuidInput.addEventListener('input', () => {
-                if (!validarUUID(uuidInput.value.trim())) {
-                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
-                    uuidAlert.style.display = 'block';
-                } else {
-                    uuidAlert.textContent = '';
-                    uuidAlert.style.display = 'none';
-                }
-            });
-
-            const enviarBtn = document.getElementById('enviar-pedido');
-            const form = document.getElementById('formPedido');
-            const msg = document.getElementById('msg');
-
-            enviarBtn.onclick = async e => {
-                e.preventDefault();
-
-                const orderid = uuidInput.value.trim();
-                const descricao = document.getElementById('descricao').value.trim();
-                const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
-
-                msg.textContent = '';
-                msg.className = 'msg';
-
-                if (!motivoAtual) {
-                    msg.textContent = 'Selecione um motivo válido.';
-                    msg.classList.add('error');
-                    return;
-                }
-                if (!validarUUID(orderid)) {
-                    uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-                    uuidAlert.style.display = 'block';
-                    return;
-                }
-                if (!descricao) {
-                    msg.textContent = 'Preencha a descrição.';
-                    msg.classList.add('error');
-                    return;
-                }
-
-                await enviarWebhook({ 
-                    tipo: 'pedido_venda', 
-                    orderid, 
-                    motivo: motivoAtual.label, 
-                    motivo_texto: motivoAtual.texto,
-                    descricao,
-                    ticket_id,
-                    conversation_id 
-                });
-
-                container.innerHTML = `
-                    <h2>Solicitação enviada!</h2>
-                    <div class="msg">
-                        Pedido: ${orderid}<br>
-                        Motivo: ${motivoAtual.texto}<br>
-                        Descrição: ${descricao}
-                    </div>
-                `;
-            };
-
-            form.onsubmit = e => {
-                e.preventDefault();
-                enviarBtn.click();
-            };
+        if (!motivoAtual) {
+          msg.textContent = 'Selecione um motivo válido.';
+          msg.classList.add('error');
+          return;
         }
 
-        // --- Fluxo 3: Demais solicitações ---
-        function abrirFluxo3() {
-            const motivosDiversos = [
-                { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
-                { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
-                { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
-                { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
-                { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
-                { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
-                { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
-                { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
-                { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
-                { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
-                { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
-                { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
-                { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
-                { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
-                { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
-                { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
-                { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
-                { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
-                { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
-                { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
-            ].sort((a, b) => a.texto.localeCompare(b.texto));
-
-            container.innerHTML = `
-                <h2>Motivo da solicitação:</h2>
-                <form id="formDiversos" class="form-box" novalidate style="position:relative;">
-                    <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
-                        <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
-                    </div>
-                    <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-                    <textarea id="descricao" name="descricao" required></textarea>
-                    <div class="action-box" id="enviar-diversos">Enviar</div>
-                </form>
-                <div id="msg" class="msg"></div>
-            `;
-
-            const motivoInput = document.getElementById('motivo-diverso');
-            const motivoList = document.getElementById('motivo-diverso-list');
-            let motivoSelecionado = null;
-
-            motivoInput.addEventListener('input', () => {
-                const val = motivoInput.value.toLowerCase();
-                motivoList.innerHTML = '';
-
-                if (!val) {
-                    motivoList.style.display = 'none';
-                    motivoSelecionado = null;
-                    return;
-                }
-
-                const filtrados = motivosDiversos.filter(m => m.texto.toLowerCase().includes(val));
-
-                filtrados.forEach(motivo => {
-                    const li = document.createElement('li');
-                    li.textContent = motivo.texto;
-                    li.onclick = () => {
-                        motivoInput.value = motivo.texto;
-                        motivoSelecionado = motivo;
-                        motivoList.style.display = 'none';
-                    };
-                    motivoList.appendChild(li);
-                });
-
-                motivoList.style.display = filtrados.length ? 'block' : 'none';
-            });
-
-            motivoInput.addEventListener('focus', () => {
-                if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
-                    motivoList.style.display = 'none';
-                }
-            });
-
-            const enviarBtn = document.getElementById('enviar-diversos');
-            const form = document.getElementById('formDiversos');
-            const msg = document.getElementById('msg');
-
-            enviarBtn.onclick = async e => {
-                e.preventDefault();
-
-                const descricao = form.descricao.value.trim();
-                const motivoAtual = motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
-
-                msg.textContent = '';
-                msg.className = 'msg';
-
-                if (!motivoAtual) {
-                    msg.textContent = 'Selecione um motivo válido.';
-                    msg.classList.add('error');
-                    return;
-                }
-                if (!descricao) {
-                    msg.textContent = 'Preencha a descrição.';
-                    msg.classList.add('error');
-                    return;
-                }
-
-                await enviarWebhook({ 
-                    tipo: 'demais_solicitacoes', 
-                    motivo: motivoAtual.label, 
-                    motivo_texto: motivoAtual.texto,
-                    descricao,
-                    ticket_id,
-                    conversation_id 
-                });
-
-                container.innerHTML = `
-                    <h2>Solicitação enviada!</h2>
-                    <div class="msg">
-                        Motivo: ${motivoAtual.texto}<br>
-                        Descrição: ${descricao}
-                    </div>
-                `;
-            };
-
-            form.onsubmit = e => {
-                e.preventDefault();
-                enviarBtn.click();
-            };
+        if (!descricao) {
+          msg.textContent = 'Preencha a descrição.';
+          msg.classList.add('error');
+          return;
         }
-    </script>
+
+        await enviarWebhook({
+          tipo: 'demais_solicitacoes',
+          motivo: motivoAtual.label,
+          motivo_texto: motivoAtual.texto,
+          descricao,
+          ticket_id,
+          conversation_id,
+        });
+
+        container.innerHTML = `
+          <h2>Solicitação enviada!</h2>
+          <div class="msg">
+            Motivo: ${motivoAtual.texto}<br />
+            Descrição: ${descricao}
+          </div>
+        `;
+      };
+
+      form.onsubmit = e => {
+        e.preventDefault();
+        enviarBtn.click();
+      };
+    }
+  </script>
 </body>
 </html>
