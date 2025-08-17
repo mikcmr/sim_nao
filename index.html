@@ -268,33 +268,33 @@
     function abrirFluxo2() {
         // Motivos de contato para pedido de venda
         const motivosPedido = [
+            { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
             { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
-            { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
-            { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
-            { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
-            { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
-            { texto: 'Pedido B2B', label: 'pedido_b2b' },
             { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
             { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
-            { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
-            { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
-            { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
-            { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
-            { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+            { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
             { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
+            { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+            { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+            { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
+            { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+            { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
+            { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
+            { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' },
             { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
             { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
             { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
             { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+            { texto: 'Pedido B2B', label: 'pedido_b2b' },
             { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
             { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
-            { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
-            { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
-            { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
-            { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+            { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
             { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
-            { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
-        ];
+            { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
+            { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+            { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+            { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' }
+        ].sort((a, b) => a.texto.localeCompare(b.texto));
         const container = document.getElementById('main-container');
         let motivosHtml = '';
         motivosPedido.forEach(motivo => {
@@ -402,7 +402,7 @@
             { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
             { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
             { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
-        ];
+        ].sort((a, b) => a.texto.localeCompare(b.texto));
         const container = document.getElementById('main-container');
         let motivosHtml = '';
         motivosDiversos.forEach(motivo => {
