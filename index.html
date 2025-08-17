@@ -254,15 +254,22 @@
     `;
     document.head.appendChild(style);
 
-    // Navegação dos fluxos
-    document.getElementById('acao1').onclick = () => abrirFluxo1();
-    document.getElementById('acao2').onclick = () => abrirFluxo2();
-    document.getElementById('acao3').onclick = () => abrirFluxo3();
-
     // Captura ticket_id e conversation_id da URL
     const urlParams = new URLSearchParams(window.location.search);
     const ticket_id = urlParams.get('ticket_id') || '';
     const conversation_id = urlParams.get('conversation_id') || '';
+
+    // Verifica se o ticket_id já foi respondido
+    const TICKET_KEY = 'eva_ticket_' + ticket_id;
+    if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
+        document.getElementById('main-container').innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+        return;
+    }
+
+    // Navegação dos fluxos
+    document.getElementById('acao1').onclick = () => abrirFluxo1();
+    document.getElementById('acao2').onclick = () => abrirFluxo2();
+    document.getElementById('acao3').onclick = () => abrirFluxo3();
 
     function abrirFluxo1() {
         const container = document.getElementById('main-container');
@@ -499,13 +506,15 @@
 
     // Função para enviar para webhook
     async function enviarWebhook(payload) {
-        // Adapte para enviar ticket_id/conversation_id se necessário
         try {
             await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            if (payload.ticket_id) {
+                localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
+            }
         } catch (e) {}
     }
     </script>
