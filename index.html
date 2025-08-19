@@ -1,598 +1,606 @@
-<script>
-const urlParams = new URLSearchParams(window.location.search);
-const ticket_id = urlParams.get('ticket_id') || '';
-const conversation_id = urlParams.get('conversation_id') || '';
-const email_cliente = urlParams.get('email_cliente') || '';
-const container = document.getElementById('main-container');
-const TICKET_KEY = 'eva_ticket_' + ticket_id;
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const ticket_id = urlParams.get('ticket_id') || '';
+  const conversation_id = urlParams.get('conversation_id') || '';
+  const email_cliente = urlParams.get('email_cliente') || '';
+  const container = document.getElementById('main-container');
+  const TICKET_KEY = 'eva_ticket_' + ticket_id;
 
-if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
-  container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
-} else {
-  document.getElementById('acao1').onclick = abrirFluxo1;
-  document.getElementById('acao2').onclick = abrirFluxo2;
-  document.getElementById('acao3').onclick = abrirFluxo3;
-  const acaoEndereco = document.getElementById('acao_endereco');
-  if (acaoEndereco) {
-    acaoEndereco.onclick = abrirFluxoEndereco;
+  if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
+    container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+    return; // Não permitir outros acessos
   }
-}
 
-function validarUUID(uuid) {
-  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
-}
+  // Vincula os eventos dos botões ao carregar a página
+  const acao1Btn = document.getElementById('acao1');
+  const acao2Btn = document.getElementById('acao2');
+  const acao3Btn = document.getElementById('acao3');
+  const acaoEnderecoBtn = document.getElementById('acaoEndereco');
 
-async function enviarWebhook(payload) {
-  try {
-    await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (payload.ticket_id) {
-      localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
-    }
-  } catch (e) {
-    console.error('Erro ao enviar webhook:', e);
+  if (acao1Btn) {
+    acao1Btn.onclick = abrirFluxo1;
   }
-}
+  if (acao2Btn) {
+    acao2Btn.onclick = abrirFluxo2;
+  }
+  if (acao3Btn) {
+    acao3Btn.onclick = abrirFluxo3;
+  }
+  if (acaoEnderecoBtn) {
+    acaoEnderecoBtn.onclick = abrirFluxoEndereco;
+  }
 
-function abrirFluxo1() {
-  container.innerHTML = `
-    <h2>Chamado já aberto</h2>
-    <form id="form1" class="form-box" novalidate>
-      <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
-      <input type="text" id="ticketid" name="ticketid" required />
+  // Validação UUID genérica
+  function validarUUID(uuid) {
+    return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
+  }
 
-      <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
-      <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
-
-      <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
-      <textarea id="solicitacao" name="solicitacao" required></textarea>
-
-      <div class="action-box" id="enviar-chamado">Enviar</div>
-    </form>
-    <div id="msg" class="msg"></div>
-  `;
-  const enviarBtn = document.getElementById('enviar-chamado');
-  const form = document.getElementById('form1');
-  const msg = document.getElementById('msg');
-
-  enviarBtn.onclick = async e => {
-    e.preventDefault();
-    const ticketid = form.ticketid.value.trim();
-    const emailClienteValue = form.email_cliente.value.trim();
-    const solicitacao = form.solicitacao.value.trim();
-    msg.textContent = '';
-    msg.className = 'msg';
-
-    if (!ticketid) {
-      msg.textContent = 'Preencha o TicketID.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!emailClienteValue) {
-      msg.textContent = 'Preencha o email do cliente.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!solicitacao) {
-      msg.textContent = 'Preencha a solicitação.';
-      msg.classList.add('error');
-      return;
-    }
-
-    await enviarWebhook({
-      tipo: 'chamado_aberto',
-      ticketid,
-      solicitacao,
-      ticket_id,
-      conversation_id,
-      email_cliente: emailClienteValue,
-    });
-    container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Email: ${emailClienteValue}<br>Solicitação: ${solicitacao}</div>`;
-  };
-
-  form.onsubmit = e => {
-    e.preventDefault();
-    enviarBtn.click();
-  };
-}
-
-function abrirFluxo2() {
-  const motivosPedido = [
-    { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
-    { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
-    { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
-    { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
-    { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
-    { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
-    { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
-    { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
-    { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
-    { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
-    { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
-    { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' },
-    { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
-    { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
-    { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
-    { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
-    { texto: 'Pedido B2B', label: 'pedido_b2b' },
-    { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
-    { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
-    { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
-    { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
-    { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
-    { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
-    { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
-  ].sort((a, b) => a.texto.localeCompare(b.texto));
-
-  container.innerHTML = `
-    <h2>Motivo do pedido de venda:</h2>
-    <form id="formPedido" class="form-box" novalidate style="position:relative;">
-      <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
-      <div class="autocomplete-wrapper">
-        <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
-        <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
-      </div>
-
-      <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
-      <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-      <div id="uuid-alert" class="msg error" style="display:none;"></div>
-
-      <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
-      <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
-
-      <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-      <textarea id="descricao" name="descricao" required></textarea>
-
-      <div class="action-box" id="enviar-pedido">Enviar</div>
-    </form>
-    <div id="msg" class="msg"></div>
-  `;
-
-  const motivoInput = document.getElementById('motivo-pedido');
-  const motivoList = document.getElementById('motivo-pedido-list');
-  const uuidInput = document.getElementById('orderid');
-  const uuidAlert = document.getElementById('uuid-alert');
-  let motivoSelecionado = null;
-
-  motivoInput.addEventListener('input', () => {
-    const val = motivoInput.value.toLowerCase();
-    motivoList.innerHTML = '';
-    if (!val) {
-      motivoList.style.display = 'none';
-      motivoSelecionado = null;
-      return;
-    }
-    const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
-    filtrados.forEach(motivo => {
-      const li = document.createElement('li');
-      li.textContent = motivo.texto;
-      li.onclick = () => {
-        motivoInput.value = motivo.texto;
-        motivoSelecionado = motivo;
-        motivoList.style.display = 'none';
-      };
-      motivoList.appendChild(li);
-    });
-    motivoList.style.display = filtrados.length ? 'block' : 'none';
-  });
-
-  motivoInput.addEventListener('focus', () => {
-    if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
-  });
-
-  document.addEventListener('click', e => {
-    if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
-      motivoList.style.display = 'none';
-    }
-  });
-
-  uuidInput.addEventListener('input', () => {
-    if (!validarUUID(uuidInput.value.trim())) {
-      uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
-      uuidAlert.style.display = 'block';
-    } else {
-      uuidAlert.textContent = '';
-      uuidAlert.style.display = 'none';
-    }
-  });
-
-  const enviarBtn = document.getElementById('enviar-pedido');
-  const form = document.getElementById('formPedido');
-  const msg = document.getElementById('msg');
-
-  enviarBtn.onclick = async e => {
-    e.preventDefault();
-    const orderid = uuidInput.value.trim();
-    const descricao = form.descricao.value.trim();
-    const emailClienteValue = form.email_cliente.value.trim();
-    const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
-
-    msg.textContent = '';
-    msg.className = 'msg';
-
-    if (!motivoAtual) {
-      msg.textContent = 'Selecione um motivo válido.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!validarUUID(orderid)) {
-      uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-      uuidAlert.style.display = 'block';
-      return;
-    } else {
-      uuidAlert.style.display = 'none';
-    }
-    if (!emailClienteValue) {
-      msg.textContent = 'Preencha o email do cliente.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!descricao) {
-      msg.textContent = 'Preencha a descrição.';
-      msg.classList.add('error');
-      return;
-    }
-
-    await enviarWebhook({
-      tipo: 'pedido_venda',
-      orderid,
-      motivo: motivoAtual.label,
-      motivo_texto: motivoAtual.texto,
-      descricao,
-      ticket_id,
-      conversation_id,
-      email_cliente: emailClienteValue,
-    });
-
-    container.innerHTML = `
-      <h2>Solicitação enviada!</h2>
-      <div class="msg">
-        Pedido: ${orderid}<br>
-        Email: ${emailClienteValue}<br>
-        Motivo: ${motivoAtual.texto}<br>
-        Descrição: ${descricao}
-      </div>
-    `;
-  };
-
-  form.onsubmit = e => {
-    e.preventDefault();
-    enviarBtn.click();
-  };
-}
-
-function abrirFluxo3() {
-  const motivosDiversos = [
-    { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
-    { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
-    { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
-    { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
-    { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
-    { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
-    { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
-    { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
-    { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
-    { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
-    { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
-    { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
-    { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
-    { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
-    { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
-    { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
-    { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
-    { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
-    { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
-    { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
-  ].sort((a,b) => a.texto.localeCompare(b.texto));
-
-  container.innerHTML = `
-    <h2>Motivo da solicitação:</h2>
-    <form id="formDiversos" class="form-box" novalidate style="position:relative;">
-      <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
-      <div class="autocomplete-wrapper">
-        <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
-        <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
-      </div>
-
-      <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
-      <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
-
-      <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
-      <textarea id="descricao" name="descricao" required></textarea>
-
-      <div class="action-box" id="enviar-diversos">Enviar</div>
-    </form>
-    <div id="msg" class="msg"></div>
-  `;
-
-  const motivoInput = document.getElementById('motivo-diverso');
-  const motivoList = document.getElementById('motivo-diverso-list');
-  let motivoSelecionado = null;
-
-  motivoInput.addEventListener('input', () => {
-    const val = motivoInput.value.toLowerCase();
-    motivoList.innerHTML = '';
-    if (!val) {
-      motivoList.style.display = 'none';
-      motivoSelecionado = null;
-      return;
-    }
-    const filtrados = motivosDiversos.filter(m => m.texto.toLowerCase().includes(val) );
-    filtrados.forEach(motivo => {
-      const li = document.createElement('li');
-      li.textContent = motivo.texto;
-      li.onclick = () => {
-        motivoInput.value = motivo.texto;
-        motivoSelecionado = motivo;
-        motivoList.style.display = 'none';
-      };
-      motivoList.appendChild(li);
-    });
-    motivoList.style.display = filtrados.length ? 'block' : 'none';
-  });
-
-  motivoInput.addEventListener('focus', () => {
-    if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
-  });
-
-  document.addEventListener('click', e => {
-    if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
-      motivoList.style.display = 'none';
-    }
-  });
-
-  const enviarBtn = document.getElementById('enviar-diversos');
-  const form = document.getElementById('formDiversos');
-  const msg = document.getElementById('msg');
-
-  enviarBtn.onclick = async e => {
-    e.preventDefault();
-    const descricao = form.descricao.value.trim();
-    const emailClienteValue = form.email_cliente.value.trim();
-    const motivoAtual = motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
-    msg.textContent = '';
-    msg.className = 'msg';
-
-    if (!motivoAtual) {
-      msg.textContent = 'Selecione um motivo válido.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!emailClienteValue) {
-      msg.textContent = 'Preencha o email do cliente.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!descricao) {
-      msg.textContent = 'Preencha a descrição.';
-      msg.classList.add('error');
-      return;
-    }
-
-    await enviarWebhook({
-      tipo: 'demais_solicitacoes',
-      motivo: motivoAtual.label,
-      motivo_texto: motivoAtual.texto,
-      descricao,
-      ticket_id,
-      conversation_id,
-      email_cliente: emailClienteValue,
-    });
-
-    container.innerHTML = `
-      <h2>Solicitação enviada!</h2>
-      <div class="msg">
-        Email: ${emailClienteValue}<br />
-        Motivo: ${motivoAtual.texto}<br />
-        Descrição: ${descricao}
-      </div>
-    `;
-  };
-
-  form.onsubmit = e => {
-    e.preventDefault();
-    enviarBtn.click();
-  };
-}
-
-function abrirFluxoEndereco() {
-  container.innerHTML = `
-    <h2>Alteração de Endereço</h2>
-    <form id="formEndereco" class="form-box" novalidate style="position:relative;">
-      <label for="orderid" style="font-size:0.95rem;">ID do Pedido (UUID):</label>
-      <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-      <div id="uuid-alert" class="msg error" style="display:none;"></div>
-
-      <label for="novo-cep" style="font-size:0.95rem;">Novo CEP:</label>
-      <input type="text" id="novo-cep" name="novo-cep" required placeholder="Digite o CEP" maxlength="9" />
-      <div id="cep-alert" class="msg error" style="display:none;"></div>
-
-      <label for="rua" style="font-size:0.95rem;">Rua:</label>
-      <input type="text" id="rua" name="rua" required readonly />
-
-      <label for="bairro" style="font-size:0.95rem;">Bairro:</label>
-      <input type="text" id="bairro" name="bairro" required readonly />
-
-      <label for="cidade" style="font-size:0.95rem;">Cidade:</label>
-      <input type="text" id="cidade" name="cidade" required readonly />
-
-      <label for="uf" style="font-size:0.95rem;">UF:</label>
-      <input type="text" id="uf" name="uf" required readonly />
-
-      <label for="numero" style="font-size:0.95rem;">
-        Número: <small style="font-weight:normal;">(se não houver número, escreva "s/n")</small>
-      </label>
-      <input type="text" id="numero" name="numero" required placeholder="Número" />
-
-      <label for="complemento" style="font-size:0.95rem;">
-        Complemento: <small style="font-weight:normal;">(se não houver complemento, escreva "n/a")</small>
-      </label>
-      <input type="text" id="complemento" name="complemento" required placeholder="Complemento" />
-
-      <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
-      <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
-
-      <div class="action-box" id="enviar-endereco">Enviar</div>
-    </form>
-    <div id="msg" class="msg"></div>
-  `;
-
-  const form = document.getElementById('formEndereco');
-  const uuidInput = form.orderid;
-  const uuidAlert = document.getElementById('uuid-alert');
-
-  const cepInput = form['novo-cep'];
-  const cepAlert = document.getElementById('cep-alert');
-  const ruaInput = form.rua;
-  const bairroInput = form.bairro;
-  const cidadeInput = form.cidade;
-  const ufInput = form.uf;
-
-  const numeroInput = form.numero;
-  const complementoInput = form.complemento;
-  const emailInput = form.email_cliente;
-
-  const msg = document.getElementById('msg');
-  const enviarBtn = document.getElementById('enviar-endereco');
-
-  uuidInput.addEventListener('input', () => {
-    if (!validarUUID(uuidInput.value.trim())) {
-      uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
-      uuidAlert.style.display = 'block';
-    } else {
-      uuidAlert.textContent = '';
-      uuidAlert.style.display = 'none';
-    }
-  });
-
-  cepInput.addEventListener('input', () => {
-    let val = cepInput.value.replace(/\D/g, '');
-    if (val.length > 5) val = val.slice(0, 5) + '-' + val.slice(5, 8);
-    cepInput.value = val;
-
-    if (val.length === 9) {
-      buscarCep(val);
-    } else {
-      cepAlert.style.display = 'none';
-      ruaInput.value = '';
-      bairroInput.value = '';
-      cidadeInput.value = '';
-      ufInput.value = '';
-    }
-  });
-
-  async function buscarCep(cep) {
-    cepAlert.style.display = 'none';
-    ruaInput.value = '';
-    bairroInput.value = '';
-    cidadeInput.value = '';
-    ufInput.value = '';
-    msg.textContent = '';
-
-    const cepSemHifen = cep.replace('-', '');
-
+  // Envia payload para webhook (API)
+  async function enviarWebhook(payload) {
     try {
-      const resp = await fetch(`https://viacep.com.br/ws/${cepSemHifen}/json/`);
-      if (!resp.ok) throw new Error('Erro na consulta CEP');
-
-      const data = await resp.json();
-
-      if (data.erro) {
-        cepAlert.textContent = 'CEP não encontrado.';
-        cepAlert.style.display = 'block';
-      } else {
-        ruaInput.value = data.logradouro || '';
-        bairroInput.value = data.bairro || '';
-        cidadeInput.value = data.localidade || '';
-        ufInput.value = data.uf || '';
+      await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (payload.ticket_id) {
+        localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
       }
-    } catch (error) {
-      cepAlert.textContent = 'Erro ao consultar CEP.';
-      cepAlert.style.display = 'block';
+    } catch (e) {
+      console.error('Erro ao enviar webhook:', e);
     }
   }
 
-  enviarBtn.onclick = async e => {
-    e.preventDefault();
-    msg.textContent = '';
-    msg.className = 'msg';
+  // ===== Função abrirFluxo1 - Chamado aberto =====
+  function abrirFluxo1() {
+    container.innerHTML = `
+      <h2>Chamado já aberto</h2>
+      <form id="form1" class="form-box" novalidate>
+        <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
+        <input type="text" id="ticketid" name="ticketid" required />
+        <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+        <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+        <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
+        <textarea id="solicitacao" name="solicitacao" required></textarea>
+        <div class="action-box" id="enviar-chamado">Enviar</div>
+      </form>
+      <div id="msg" class="msg"></div>
+    `;
 
-    const orderid = uuidInput.value.trim();
-    const cepVal = cepInput.value.trim();
-    const ruaVal = ruaInput.value.trim();
-    const bairroVal = bairroInput.value.trim();
-    const cidadeVal = cidadeInput.value.trim();
-    const ufVal = ufInput.value.trim();
-    const numeroVal = numeroInput.value.trim();
-    const complementoVal = complementoInput.value.trim();
-    const emailVal = emailInput.value.trim();
+    const enviarBtn = document.getElementById('enviar-chamado');
+    const form = document.getElementById('form1');
+    const msg = document.getElementById('msg');
 
-    if (!validarUUID(orderid)) {
-      msg.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-      msg.classList.add('error');
-      return;
-    }
-    if (cepVal.length !== 9 || !ruaVal || !bairroVal || !cidadeVal || !ufVal) {
-      msg.textContent = 'Informe um CEP válido para preencher Rua, Bairro, Cidade e UF.';
-      msg.classList.add('error');
-      return;
-    }
-    if (!numeroVal) {
-      msg.textContent = 'O campo Número é obrigatório. Caso não exista, preencha com "s/n".';
-      msg.classList.add('error');
-      return;
-    }
-    if (!complementoVal) {
-      msg.textContent = 'O campo Complemento é obrigatório. Caso não exista, preencha com "n/a".';
-      msg.classList.add('error');
-      return;
-    }
-    if (!emailVal) {
-      msg.textContent = 'Preencha o email do cliente.';
-      msg.classList.add('error');
-      return;
-    }
+    enviarBtn.onclick = async e => {
+      e.preventDefault();
+      const ticketid = form.ticketid.value.trim();
+      const emailClienteValue = form.email_cliente.value.trim();
+      const solicitacao = form.solicitacao.value.trim();
+      msg.textContent = '';
+      msg.className = 'msg';
 
-    const numero = numeroVal.toLowerCase() === 's/n' ? 's/n' : numeroVal;
-    const complemento = complementoVal.toLowerCase() === 'n/a' ? 'n/a' : complementoVal;
+      if (!ticketid) {
+        msg.textContent = 'Preencha o TicketID.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!emailClienteValue) {
+        msg.textContent = 'Preencha o email do cliente.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!solicitacao) {
+        msg.textContent = 'Preencha a solicitação.';
+        msg.classList.add('error');
+        return;
+      }
 
-    await enviarWebhook({
-      tipo: 'alteracao_endereco',
-      orderid,
-      novo_cep: cepVal,
-      rua: ruaVal,
-      bairro: bairroVal,
-      cidade: cidadeVal,
-      uf: ufVal,
-      numero,
-      complemento,
-      ticket_id,
-      conversation_id,
-      email_cliente: emailVal,
-    });
+      await enviarWebhook({
+        tipo: 'chamado_aberto',
+        ticketid,
+        solicitacao,
+        ticket_id,
+        conversation_id,
+        email_cliente: emailClienteValue,
+      });
+
+      container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Email: ${emailClienteValue}<br>Solicitação: ${solicitacao}</div>`;
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      enviarBtn.click();
+    };
+  }
+
+  // ===== Função abrirFluxo2 - Pedido de venda =====
+  function abrirFluxo2() {
+    const motivosPedido = [
+      // "Alteração de endereço" foi REMOVIDO conforme solicitado
+      { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
+      { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+      { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
+      { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
+      { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
+      { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+      { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+      { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+      { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
+      { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' },
+      { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
+      { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+      { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
+      { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
+      { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
+      { texto: 'Pedido B2B', label: 'pedido_b2b' },
+      { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
+      { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
+      { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
+      { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+      { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
+      { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
+      { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' }
+    ].sort((a, b) => a.texto.localeCompare(b.texto));
 
     container.innerHTML = `
-      <h2>Solicitação enviada!</h2>
-      <div class="msg">
-        Pedido: ${orderid} <br />
-        Email: ${emailVal} <br />
-        Novo CEP: ${cepVal} <br />
-        Rua: ${ruaVal} <br />
-        Bairro: ${bairroVal} <br />
-        Cidade: ${cidadeVal} <br />
-        UF: ${ufVal} <br />
-        Número: ${numero} <br />
-        Complemento: ${complemento} <br />
-      </div>
+      <h2>Motivo do pedido de venda:</h2>
+      <form id="formPedido" class="form-box" novalidate style="position:relative;">
+        <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
+          <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
+        </div>
+        <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
+        <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+        <div id="uuid-alert" class="msg error" style="display:none;"></div>
+        <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+        <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+        <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+        <textarea id="descricao" name="descricao" required></textarea>
+        <div class="action-box" id="enviar-pedido">Enviar</div>
+      </form>
+      <div id="msg" class="msg"></div>
     `;
-  };
 
-  form.onsubmit = e => {
-    e.preventDefault();
-    enviarBtn.click();
-  };
-}
-</script>
+    const motivoInput = document.getElementById('motivo-pedido');
+    const motivoList = document.getElementById('motivo-pedido-list');
+    const uuidInput = document.getElementById('orderid');
+    const uuidAlert = document.getElementById('uuid-alert');
+    let motivoSelecionado = null;
+
+    // Autocomplete motivos
+    motivoInput.addEventListener('input', () => {
+      const val = motivoInput.value.toLowerCase();
+      motivoList.innerHTML = '';
+      if (!val) {
+        motivoList.style.display = 'none';
+        motivoSelecionado = null;
+        return;
+      }
+      const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
+      filtrados.forEach(motivo => {
+        const li = document.createElement('li');
+        li.textContent = motivo.texto;
+        li.onclick = () => {
+          motivoInput.value = motivo.texto;
+          motivoSelecionado = motivo;
+          motivoList.style.display = 'none';
+        };
+        motivoList.appendChild(li);
+      });
+      motivoList.style.display = filtrados.length ? 'block' : 'none';
+    });
+
+    motivoInput.addEventListener('focus', () => {
+      if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+    });
+
+    document.addEventListener('click', e => {
+      if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+        motivoList.style.display = 'none';
+      }
+    });
+
+    // Validação UUID
+    uuidInput.addEventListener('input', () => {
+      if (!validarUUID(uuidInput.value.trim())) {
+        uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
+        uuidAlert.style.display = 'block';
+      } else {
+        uuidAlert.textContent = '';
+        uuidAlert.style.display = 'none';
+      }
+    });
+
+    const enviarBtn = document.getElementById('enviar-pedido');
+    const form = document.getElementById('formPedido');
+    const msg = document.getElementById('msg');
+
+    enviarBtn.onclick = async e => {
+      e.preventDefault();
+      const orderid = uuidInput.value.trim();
+      const descricao = form.descricao.value.trim();
+      const emailClienteValue = form.email_cliente.value.trim();
+      const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
+      msg.textContent = '';
+      msg.className = 'msg';
+
+      if (!motivoAtual) {
+        msg.textContent = 'Selecione um motivo válido.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!validarUUID(orderid)) {
+        uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+        uuidAlert.style.display = 'block';
+        return;
+      } else {
+        uuidAlert.style.display = 'none';
+      }
+      if (!emailClienteValue) {
+        msg.textContent = 'Preencha o email do cliente.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!descricao) {
+        msg.textContent = 'Preencha a descrição.';
+        msg.classList.add('error');
+        return;
+      }
+
+      await enviarWebhook({
+        tipo: 'pedido_venda',
+        orderid,
+        motivo: motivoAtual.label,
+        motivo_texto: motivoAtual.texto,
+        descricao,
+        ticket_id,
+        conversation_id,
+        email_cliente: emailClienteValue,
+      });
+
+      container.innerHTML = `
+        <h2>Solicitação enviada!</h2>
+        <div class="msg"> 
+          Pedido: ${orderid}<br>
+          Email: ${emailClienteValue}<br>
+          Motivo: ${motivoAtual.texto}<br>
+          Descrição: ${descricao}
+        </div>
+      `;
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      enviarBtn.click();
+    };
+  }
+
+  // ===== Função abrirFluxo3 - Demais solicitações =====
+  function abrirFluxo3() {
+    const motivosDiversos = [
+      { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
+      { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
+      { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
+      { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
+      { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
+      { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
+      { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
+      { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
+      { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
+      { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
+      { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
+      { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
+      { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
+      { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
+      { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
+      { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
+      { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
+      { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
+      { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
+      { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
+    ].sort((a,b) => a.texto.localeCompare(b.texto));
+
+    container.innerHTML = `
+      <h2>Motivo da solicitação:</h2>
+      <form id="formDiversos" class="form-box" novalidate style="position:relative;">
+        <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
+          <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
+        </div>
+        <label for="email_cliente" style="font-size:0.95rem;">Email do cliente:</label>
+        <input type="email" id="email_cliente" name="email_cliente" required value="${email_cliente}" />
+        <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
+        <textarea id="descricao" name="descricao" required></textarea>
+        <div class="action-box" id="enviar-diversos">Enviar</div>
+      </form>
+      <div id="msg" class="msg"></div>
+    `;
+
+    const motivoInput = document.getElementById('motivo-diverso');
+    const motivoList = document.getElementById('motivo-diverso-list');
+    let motivoSelecionado = null;
+
+    motivoInput.addEventListener('input', () => {
+      const val = motivoInput.value.toLowerCase();
+      motivoList.innerHTML = '';
+      if (!val) {
+        motivoList.style.display = 'none';
+        motivoSelecionado = null;
+        return;
+      }
+      const filtrados = motivosDiversos.filter(m => m.texto.toLowerCase().includes(val));
+      filtrados.forEach(motivo => {
+        const li = document.createElement('li');
+        li.textContent = motivo.texto;
+        li.onclick = () => {
+          motivoInput.value = motivo.texto;
+          motivoSelecionado = motivo;
+          motivoList.style.display = 'none';
+        };
+        motivoList.appendChild(li);
+      });
+      motivoList.style.display = filtrados.length ? 'block' : 'none';
+    });
+
+    motivoInput.addEventListener('focus', () => {
+      if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+    });
+
+    document.addEventListener('click', e => {
+      if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+        motivoList.style.display = 'none';
+      }
+    });
+
+    const enviarBtn = document.getElementById('enviar-diversos');
+    const form = document.getElementById('formDiversos');
+    const msg = document.getElementById('msg');
+
+    enviarBtn.onclick = async e => {
+      e.preventDefault();
+      const descricao = form.descricao.value.trim();
+      const emailClienteValue = form.email_cliente.value.trim();
+      const motivoAtual = motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
+      msg.textContent = '';
+      msg.className = 'msg';
+
+      if (!motivoAtual) {
+        msg.textContent = 'Selecione um motivo válido.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!emailClienteValue) {
+        msg.textContent = 'Preencha o email do cliente.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!descricao) {
+        msg.textContent = 'Preencha a descrição.';
+        msg.classList.add('error');
+        return;
+      }
+
+      await enviarWebhook({
+        tipo: 'demais_solicitacoes',
+        motivo: motivoAtual.label,
+        motivo_texto: motivoAtual.texto,
+        descricao,
+        ticket_id,
+        conversation_id,
+        email_cliente: emailClienteValue,
+      });
+
+      container.innerHTML = `
+        <h2>Solicitação enviada!</h2>
+        <div class="msg">
+          Email: ${emailClienteValue}<br />
+          Motivo: ${motivoAtual.texto}<br />
+          Descrição: ${descricao}
+        </div>
+      `;
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      enviarBtn.click();
+    };
+  }
+
+  // ===== Função abrirFluxoEndereco - nova solicitado =====
+  function abrirFluxoEndereco() {
+    container.innerHTML = `
+      <h2>Alteração de Endereço</h2>
+      <form id="formEndereco" class="form-box" novalidate style="position:relative;">
+        <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
+        <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="color:var(--estoca-black);" />
+        <div id="uuid-alert" class="msg error" style="display:none;"></div>
+
+        <label for="cep" style="font-size:0.95rem; margin-top:12px;">CEP:</label>
+        <input type="text" id="cep" name="cep" required placeholder="Digite o CEP" maxlength="9" style="color:var(--estoca-black);" />
+        <div id="cep-alert" class="msg error" style="display:none;"></div>
+
+        <label for="uf" style="font-size:0.95rem; margin-top:12px;">UF:</label>
+        <input type="text" id="uf" name="uf" required maxlength="2" placeholder="UF" style="color:var(--estoca-black);" />
+
+        <label for="cidade" style="font-size:0.95rem; margin-top:12px;">Cidade:</label>
+        <input type="text" id="cidade" name="cidade" required placeholder="Cidade" style="color:var(--estoca-black);" />
+
+        <label for="bairro" style="font-size:0.95rem; margin-top:12px;">Bairro:</label>
+        <input type="text" id="bairro" name="bairro" required placeholder="Bairro" style="color:var(--estoca-black);" />
+
+        <label for="rua" style="font-size:0.95rem; margin-top:12px;">Rua:</label>
+        <input type="text" id="rua" name="rua" required placeholder="Rua" style="color:var(--estoca-black);" />
+
+        <label for="numero" style="font-size:0.95rem; margin-top:12px;">Número: <small style="font-weight:normal; font-style:italic;">(se não houver, escreva <strong>s/n</strong>)</small></label>
+        <input type="text" id="numero" name="numero" required placeholder="Número" style="color:var(--estoca-black);" />
+
+        <label for="complemento" style="font-size:0.95rem; margin-top:12px;">Complemento: <small style="font-weight:normal; font-style:italic;">(se não houver, escreva <strong>n/a</strong>)</small></label>
+        <input type="text" id="complemento" name="complemento" required placeholder="Complemento" style="color:var(--estoca-black);" />
+
+        <div class="action-box" id="enviar-endereco" style="margin-top:20px;">Enviar</div>
+      </form>
+
+      <div id="msg" class="msg"></div>
+    `;
+
+    const form = document.getElementById('formEndereco');
+    const enviarBtn = document.getElementById('enviar-endereco');
+    const msg = document.getElementById('msg');
+    const uuidInput = form.orderid;
+    const uuidAlert = document.getElementById('uuid-alert');
+    const cepInput = form.cep;
+    const cepAlert = document.getElementById('cep-alert');
+    const ufInput = form.uf;
+    const cidadeInput = form.cidade;
+    const bairroInput = form.bairro;
+    const ruaInput = form.rua;
+    const numeroInput = form.numero;
+    const complementoInput = form.complemento;
+
+    // Formatação CEP (99999-999)
+    cepInput.addEventListener('input', () => {
+      let val = cepInput.value.replace(/\D/g, '');
+      if (val.length > 5) {
+        val = val.slice(0,5) + '-' + val.slice(5,8);
+      }
+      cepInput.value = val;
+    });
+
+    // Consulta API ViaCEP, ao perder o foco do campo CEP
+    cepInput.addEventListener('blur', async () => {
+      const cepVal = cepInput.value.trim();
+      cepAlert.style.display = 'none';
+      if (!/^\d{5}-?\d{3}$/.test(cepVal)) {
+        cepAlert.textContent = 'CEP inválido. Formato esperado: 00000-000.';
+        cepAlert.style.display = 'block';
+        return;
+      }
+      try {
+        const cepLimpo = cepVal.replace('-', '');
+        const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        const data = await response.json();
+        if (data.erro) {
+          cepAlert.textContent = 'CEP não encontrado.';
+          cepAlert.style.display = 'block';
+          ufInput.value = '';
+          cidadeInput.value = '';
+          bairroInput.value = '';
+          ruaInput.value = '';
+        } else {
+          cepAlert.style.display = 'none';
+          ufInput.value = data.uf || '';
+          cidadeInput.value = data.localidade || '';
+          bairroInput.value = data.bairro || '';
+          ruaInput.value = data.logradouro || '';
+        }
+      } catch (error) {
+        cepAlert.textContent = 'Erro ao consultar o CEP.';
+        cepAlert.style.display = 'block';
+      }
+    });
+
+    // Validação UUID do pedido em tempo real
+    uuidInput.addEventListener('input', () => {
+      if (!validarUUID(uuidInput.value.trim())) {
+        uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).';
+        uuidAlert.style.display = 'block';
+      } else {
+        uuidAlert.textContent = '';
+        uuidAlert.style.display = 'none';
+      }
+    });
+
+    enviarBtn.onclick = async e => {
+      e.preventDefault();
+      msg.textContent = '';
+      msg.className = 'msg';
+
+      // Validações
+      if (!validarUUID(uuidInput.value.trim())) {
+        uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+        uuidAlert.style.display = 'block';
+        return;
+      } else {
+        uuidAlert.style.display = 'none';
+      }
+
+      if (!cepInput.value.trim() || !/^\d{5}-?\d{3}$/.test(cepInput.value.trim())) {
+        cepAlert.textContent = 'Informe um CEP válido.';
+        cepAlert.style.display = 'block';
+        return;
+      } else {
+        cepAlert.style.display = 'none';
+      }
+
+      if (!ufInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo UF.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!cidadeInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo Cidade.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!bairroInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo Bairro.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!ruaInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo Rua.';
+        msg.classList.add('error');
+        return;
+      }
+      if (!numeroInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo Número (se não houver, escreva "s/n").';
+        msg.classList.add('error');
+        return;
+      }
+      if (!complementoInput.value.trim()) {
+        msg.textContent = 'Por favor, preencha o campo Complemento (se não houver, escreva "n/a").';
+        msg.classList.add('error');
+        return;
+      }
+
+      const payload = {
+        tipo: 'alteracao_endereco',
+        orderid: uuidInput.value.trim(),
+        cep: cepInput.value.trim(),
+        uf: ufInput.value.trim(),
+        cidade: cidadeInput.value.trim(),
+        bairro: bairroInput.value.trim(),
+        rua: ruaInput.value.trim(),
+        numero: numeroInput.value.trim(),
+        complemento: complementoInput.value.trim(),
+        ticket_id,
+        conversation_id,
+        email_cliente,
+      };
+
+      await enviarWebhook(payload);
+
+      container.innerHTML = `
+        <h2>Solicitação enviada!</h2>
+        <div class="msg" style="color:var(--estoca-blue); font-weight:600;">
+          Pedido (UUID): ${payload.orderid} <br>
+          CEP: ${payload.cep} <br>
+          UF: ${payload.uf} <br>
+          Cidade: ${payload.cidade} <br>
+          Bairro: ${payload.bairro} <br>
+          Rua: ${payload.rua} <br>
+          Número: ${payload.numero} <br>
+          Complemento: ${payload.complemento} <br>
+          Email: ${payload.email_cliente}
+        </div>
+      `;
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      enviarBtn.click();
+    };
+  }
+});
