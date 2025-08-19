@@ -12,8 +12,7 @@
     document.getElementById('acao1').onclick = abrirFluxo1;
     document.getElementById('acao2').onclick = abrirFluxo2;
     document.getElementById('acao3').onclick = abrirFluxo3;
-    // Novo card "Alteração de endereço"
-    document.getElementById('acao_endereco').onclick = abrirFluxoEndereco;
+    document.getElementById('acao_endereco').onclick = abrirFluxoEndereco; // Novo card
   }
 
   function validarUUID(uuid) {
@@ -34,6 +33,7 @@
       console.error('Erro ao enviar webhook:', e);
     }
   }
+
 
   function abrirFluxo1() {
     container.innerHTML = `
@@ -97,9 +97,10 @@
     };
   }
 
+
   function abrirFluxo2() {
+    // REMOVIDO motivo "Alteração de endereço" deste array
     const motivosPedido = [
-      // REMOVIDO: { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
       { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
       { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
       { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
@@ -397,7 +398,7 @@
     };
   }
 
-  // Nova função para fluxo "Alteração de endereço"
+  // Aqui cria o novo fluxo para alteração de endereço:
   function abrirFluxoEndereco() {
     container.innerHTML = `
       <h2>Alteração de Endereço</h2>
@@ -465,11 +466,10 @@
       }
     });
 
-    // Formatar cep (automaticamente insere hífen)
+    // Formata CEP e busca via API
     cepInput.addEventListener('input', () => {
       let val = cepInput.value.replace(/\D/g, '');
       if (val.length > 5) val = val.slice(0,5) + '-' + val.slice(5,8);
-      else val = val;
       cepInput.value = val;
 
       if (val.length === 9) {
@@ -482,7 +482,6 @@
       }
     });
 
-    // Busca CEP via API ViaCEP
     async function buscarCep(cep) {
       cepAlert.style.display = 'none';
       cidadeInput.value = '';
@@ -526,13 +525,12 @@
       const complementoVal = complementoInput.value.trim();
       const emailVal = emailInput.value.trim();
 
-      // Validações
       if (!validarUUID(orderid)) {
         msg.textContent = 'ID do pedido inválido. Deve ser um UUID.';
         msg.classList.add('error');
         return;
       }
-      if (cepVal.length !== 9 || cidadeVal === '' || bairroVal === '' || ufVal === '') {
+      if (cepVal.length !== 9 || !cidadeVal || !bairroVal || !ufVal) {
         msg.textContent = 'Informe um CEP válido para preencher Cidade, Bairro e UF.';
         msg.classList.add('error');
         return;
@@ -593,15 +591,21 @@
 </script>
 
 <style>
-  /* Estilos para inputs do fluxo Alteração de Endereço para usar as cores Estoca */
+  /* Estilização para os inputs do formulário alteração de endereço com cores Estoca */
   #formEndereco input[type="text"],
   #formEndereco input[type="email"] {
     background: var(--estoca-white);
     border: 1px solid var(--estoca-blue);
     color: var(--estoca-black);
     transition: border-color 0.2s;
+    box-sizing: border-box;
+    padding: 7px;
+    border-radius: 4px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    width: 100%;
   }
-
   #formEndereco input[type="text"]:focus,
   #formEndereco input[type="email"]:focus {
     border-color: var(--estoca-orange);
