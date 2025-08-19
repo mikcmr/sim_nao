@@ -206,6 +206,26 @@
       position: relative;
       width: 100%;
     }
+
+    /* Estilos para campos readonly */
+    input[readonly] {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    /* Indicadores de campos obrigatórios */
+    .required-field::after {
+      content: " *";
+      color: var(--estoca-orange);
+      font-weight: bold;
+    }
+
+    /* Estilo para campos com dados preenchidos automaticamente */
+    .auto-filled {
+      background-color: #e8f5e8 !important;
+      color: #155724 !important;
+    }
   </style>
 </head>
 <body>
@@ -248,6 +268,16 @@
         </span>
         <span class="action-title">Demais solicitações</span>
       </div>
+      <div class="menu-card" id="acao4">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2L20 6L16 10M8 22L4 18L8 14M28 18L24 22L20 18" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 26C21.5228 26 26 21.5228 26 16C26 10.4772 21.5228 6 16 6C10.4772 6 6 10.4772 6 16C6 21.5228 10.4772 26 16 26Z" stroke="#fff" stroke-width="2"/>
+          </svg>
+        </span>
+        <span class="action-title">Alteração de endereço</span>
+      </div>
     </div>
     <div id="msg" class="msg"></div>
   </div>
@@ -265,6 +295,7 @@
       document.getElementById('acao1').onclick = abrirFluxo1;
       document.getElementById('acao2').onclick = abrirFluxo2;
       document.getElementById('acao3').onclick = abrirFluxo3;
+      document.getElementById('acao4').onclick = abrirFluxo4;
     }
 
     function validarUUID(uuid) {
@@ -342,7 +373,6 @@
 
     function abrirFluxo2() {
       const motivosPedido = [
-        { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
         { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
         { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
         { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
@@ -619,6 +649,217 @@
           <div class="msg">
             Motivo: ${motivoAtual.texto}<br />
             Descrição: ${descricao}
+          </div>
+        `;
+      };
+
+      form.onsubmit = e => {
+        e.preventDefault();
+        enviarBtn.click();
+      };
+    }
+
+    function abrirFluxo4() {
+      container.innerHTML = `
+        <h2>Alteração de Endereço</h2>
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid var(--estoca-blue);">
+          <p style="margin: 0; font-size: 0.9rem; color: #1565c0;">
+            <strong>Instruções:</strong> Digite o ID do pedido e o novo CEP. Os campos de endereço serão preenchidos automaticamente. 
+            Número e Complemento são obrigatórios - se não houver, digite "s/n" e "n/a" respectivamente.
+          </p>
+        </div>
+        <form id="formEndereco" class="form-box" novalidate>
+          <label for="orderid" style="font-size:0.95rem;">ID do Pedido (UUID):</label>
+          <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+          <div id="uuid-alert" class="msg error" style="display:none;"></div>
+          
+          <label for="cep" style="font-size:0.95rem;">Novo CEP:</label>
+          <input type="text" id="cep" name="cep" required placeholder="00000-000" maxlength="8" />
+          <div id="cep-alert" class="msg error" style="display:none;"></div>
+          
+          <label for="logradouro" style="font-size:0.95rem;">Rua:</label>
+          <input type="text" id="logradouro" name="logradouro" required readonly />
+          
+          <label for="numero" class="required-field" style="font-size:0.95rem;">Número</label>
+          <input type="text" id="numero" name="numero" required placeholder="Se não houver, digite: s/n" />
+          
+          <label for="complemento" class="required-field" style="font-size:0.95rem;">Complemento</label>
+          <input type="text" id="complemento" name="complemento" required placeholder="Se não houver, digite: n/a" />
+          
+          <label for="bairro" style="font-size:0.95rem;">Bairro:</label>
+          <input type="text" id="bairro" name="bairro" required readonly />
+          
+          <label for="cidade" style="font-size:0.95rem;">Cidade:</label>
+          <input type="text" id="cidade" name="cidade" required readonly />
+          
+          <label for="estado" style="font-size:0.95rem;">UF:</label>
+          <input type="text" id="estado" name="estado" required readonly />
+          
+          <div class="action-box" id="enviar-endereco">Enviar</div>
+        </form>
+        <div id="msg" class="msg"></div>
+      `;
+
+      const orderidInput = document.getElementById('orderid');
+      const uuidAlert = document.getElementById('uuid-alert');
+      const cepInput = document.getElementById('cep');
+      const cepAlert = document.getElementById('cep-alert');
+      const logradouroInput = document.getElementById('logradouro');
+      const numeroInput = document.getElementById('numero');
+      const complementoInput = document.getElementById('complemento');
+      const bairroInput = document.getElementById('bairro');
+      const cidadeInput = document.getElementById('cidade');
+      const estadoInput = document.getElementById('estado');
+      const enviarBtn = document.getElementById('enviar-endereco');
+      const form = document.getElementById('formEndereco');
+      const msg = document.getElementById('msg');
+
+      // Validação do UUID
+      orderidInput.addEventListener('input', () => {
+        if (!validarUUID(orderidInput.value.trim())) {
+          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
+          uuidAlert.style.display = 'block';
+        } else {
+          uuidAlert.textContent = '';
+          uuidAlert.style.display = 'none';
+        }
+      });
+
+      // Busca automática do CEP
+      cepInput.addEventListener('input', async () => {
+        const cep = cepInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        cepInput.value = cep; // Atualiza o campo com apenas números
+        
+        cepAlert.textContent = '';
+        cepAlert.style.display = 'none';
+
+        if (cep.length === 8) {
+          try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+              cepAlert.textContent = 'CEP inválido ou não encontrado.';
+              cepAlert.style.display = 'block';
+              // Limpa os campos
+              logradouroInput.value = '';
+              bairroInput.value = '';
+              cidadeInput.value = '';
+              estadoInput.value = '';
+            } else {
+              // Preenche automaticamente os campos
+              logradouroInput.value = data.logradouro || '';
+              bairroInput.value = data.bairro || '';
+              cidadeInput.value = data.localidade || '';
+              estadoInput.value = data.uf || '';
+              
+              // Aplica estilo visual aos campos preenchidos
+              if (data.logradouro) logradouroInput.classList.add('auto-filled');
+              if (data.bairro) bairroInput.classList.add('auto-filled');
+              if (data.localidade) cidadeInput.classList.add('auto-filled');
+              if (data.uf) estadoInput.classList.add('auto-filled');
+              
+              // Foca no campo número para facilitar o preenchimento
+              numeroInput.focus();
+            }
+          } catch (e) {
+            console.error('Erro ao buscar CEP:', e);
+            cepAlert.textContent = 'Erro ao buscar CEP. Tente novamente.';
+            cepAlert.style.display = 'block';
+          }
+        }
+      });
+
+      enviarBtn.onclick = async e => {
+        e.preventDefault();
+
+        const orderid = orderidInput.value.trim();
+        const cep = cepInput.value.trim();
+        const logradouro = logradouroInput.value.trim();
+        const numero = numeroInput.value.trim();
+        const complemento = complementoInput.value.trim();
+        const bairro = bairroInput.value.trim();
+        const cidade = cidadeInput.value.trim();
+        const estado = estadoInput.value.trim();
+
+        msg.textContent = '';
+        msg.className = 'msg';
+
+        // Validações
+        if (!validarUUID(orderid)) {
+          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
+          uuidAlert.style.display = 'block';
+          return;
+        }
+
+        if (!cep) {
+          cepAlert.textContent = 'Preencha o CEP.';
+          cepAlert.style.display = 'block';
+          return;
+        }
+
+        if (!logradouro) {
+          msg.textContent = 'CEP inválido ou não encontrado. Verifique o CEP informado.';
+          msg.classList.add('error');
+          return;
+        }
+
+        if (!numero) {
+          msg.textContent = 'Preencha o Número. Se não houver, digite "s/n".';
+          msg.classList.add('error');
+          return;
+        }
+
+        if (!complemento) {
+          msg.textContent = 'Preencha o Complemento. Se não houver, digite "n/a".';
+          msg.classList.add('error');
+          return;
+        }
+
+        if (!bairro) {
+          msg.textContent = 'CEP inválido ou não encontrado. Verifique o CEP informado.';
+          msg.classList.add('error');
+          return;
+        }
+
+        if (!cidade) {
+          msg.textContent = 'CEP inválido ou não encontrado. Verifique o CEP informado.';
+          msg.classList.add('error');
+          return;
+        }
+
+        if (!estado) {
+          msg.textContent = 'CEP inválido ou não encontrado. Verifique o CEP informado.';
+          msg.classList.add('error');
+          return;
+        }
+
+        await enviarWebhook({
+          tipo: 'alteração_de_endereço',
+          orderid,
+          cep,
+          logradouro,
+          numero,
+          complemento,
+          bairro,
+          cidade,
+          estado,
+          ticket_id,
+          conversation_id,
+        });
+
+        container.innerHTML = `
+          <h2>Alteração de Endereço Enviada!</h2>
+          <div class="msg">
+            <strong>ID do Pedido:</strong> ${orderid}<br>
+            <strong>Novo Endereço:</strong><br>
+            CEP: ${cep}<br>
+            Rua: ${logradouro}<br>
+            Número: ${numero}<br>
+            Complemento: ${complemento}<br>
+            Bairro: ${bairro}<br>
+            Cidade: ${cidade}<br>
+            UF: ${estado}
           </div>
         `;
       };
