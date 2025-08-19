@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <title>Motivo de Contato</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root {
       --estoca-blue: #0074d9;
@@ -229,29 +227,6 @@
       color: #155724 !important;
     }
 
-    /* Estilos personalizados para o mapa Leaflet */
-    .custom-popup .leaflet-popup-content-wrapper {
-      background: var(--estoca-white);
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border: 2px solid var(--estoca-blue);
-    }
-
-    .custom-popup .leaflet-popup-tip {
-      background: var(--estoca-white);
-      border: 2px solid var(--estoca-blue);
-    }
-
-    .custom-popup .leaflet-popup-close-button {
-      color: var(--estoca-blue);
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .custom-popup .leaflet-popup-close-button:hover {
-      color: var(--estoca-orange);
-    }
-
     /* Estilo para o container do mapa */
     #mapa-container {
       transition: all 0.3s ease;
@@ -259,6 +234,7 @@
 
     #mapa {
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
     }
   </style>
 </head>
@@ -926,7 +902,7 @@
       };
     }
 
-    // Função para mostrar o mapa usando OpenStreetMap (Leaflet)
+    // Função para mostrar o mapa usando iframe do Google Maps
     function mostrarMapa(data) {
       const mapaContainer = document.getElementById('mapa-container');
       const mapaDiv = document.getElementById('mapa');
@@ -934,113 +910,115 @@
       // Mostra o container do mapa
       mapaContainer.style.display = 'block';
       
-      // Limpa o container do mapa
-      mapaDiv.innerHTML = '';
-      
-      // Monta o endereço completo para geocodificação
+      // Monta o endereço completo para o mapa
       const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}, ${data.cep}, Brasil`;
+      const enderecoEncoded = encodeURIComponent(enderecoCompleto);
       
-      // Cria o mapa usando Leaflet
-      const map = L.map(mapaDiv).setView([-23.5505, -46.6333], 13); // Centro em São Paulo como fallback
+      // Cria o iframe do Google Maps
+      mapaDiv.innerHTML = `
+        <iframe 
+          width="100%" 
+          height="100%" 
+          frameborder="0" 
+          style="border:0; border-radius: 6px;" 
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&q=${enderecoEncoded}&zoom=16"
+          allowfullscreen>
+        </iframe>
+        <div style="
+          position: absolute; 
+          top: 10px; 
+          right: 10px; 
+          background: rgba(255,255,255,0.9); 
+          padding: 8px 12px; 
+          border-radius: 20px; 
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--estoca-blue);
+        ">
+          📍 ${data.cep}
+        </div>
+      `;
       
-      // Adiciona a camada do OpenStreetMap
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-      
-      // Geocodifica o endereço usando a API gratuita do Nominatim
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(enderecoCompleto)}&limit=1`)
-        .then(response => response.json())
-        .then(results => {
-          if (results && results.length > 0) {
-            const location = results[0];
-            const lat = parseFloat(location.lat);
-            const lon = parseFloat(location.lon);
-            
-            // Centraliza o mapa na localização encontrada
-            map.setView([lat, lon], 16);
-            
-            // Adiciona o marcador personalizado
-            const customIcon = L.divIcon({
-              html: `
-                <div style="
-                  width: 32px; 
-                  height: 32px; 
-                  background: #0074d9; 
-                  border: 3px solid white; 
-                  border-radius: 50%; 
-                  display: flex; 
-                  align-items: center; 
-                  justify-content: center;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-                ">
-                  <div style="
-                    width: 16px; 
-                    height: 16px; 
-                    background: white; 
-                    border-radius: 50%;
-                  "></div>
-                </div>
-              `,
-              className: 'custom-marker',
-              iconSize: [32, 32],
-              iconAnchor: [16, 32]
-            });
-            
-            const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
-            
-            // Adiciona uma janela de informação
-            const popup = L.popup({
-              closeButton: true,
-              maxWidth: 300,
-              className: 'custom-popup'
-            }).setContent(`
-              <div style="padding: 8px; font-family: 'Montserrat', Arial, sans-serif;">
-                <h3 style="margin: 0 0 8px 0; color: #0074d9; font-size: 14px;">📍 Localização Encontrada</h3>
-                <p style="margin: 0; font-size: 12px; color: #333;">
-                  <strong>CEP:</strong> ${data.cep}<br>
-                  <strong>Rua:</strong> ${data.logradouro}<br>
-                  <strong>Bairro:</strong> ${data.bairro}<br>
-                  <strong>Cidade:</strong> ${data.localidade}<br>
-                  <strong>UF:</strong> ${data.uf}
+      // Adiciona um fallback caso o iframe falhe
+      setTimeout(() => {
+        if (mapaDiv.querySelector('iframe') && mapaDiv.querySelector('iframe').contentWindow) {
+          // Iframe carregou com sucesso
+          console.log('Mapa carregado com sucesso');
+        } else {
+          // Fallback para botão do Google Maps
+          mapaDiv.innerHTML = `
+            <div style="
+              display: flex; 
+              flex-direction: column;
+              align-items: center; 
+              justify-content: center; 
+              height: 100%; 
+              background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+              color: #495057;
+              font-family: 'Montserrat', Arial, sans-serif;
+              text-align: center;
+              padding: 20px;
+            ">
+              <div style="
+                width: 80px;
+                height: 80px;
+                background: var(--estoca-blue);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 12px rgba(0,116,217,0.3);
+              ">
+                <span style="font-size: 40px; color: white;">🗺️</span>
+              </div>
+              <h3 style="margin: 0 0 15px 0; color: var(--estoca-blue); font-size: 18px;">
+                Localização Encontrada!
+              </h3>
+              <div style="
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                border-left: 4px solid var(--estoca-blue);
+              ">
+                <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">
+                  📍 <strong>CEP:</strong> ${data.cep}
+                </p>
+                <p style="margin: 0 0 8px 0; font-size: 13px;">
+                  🏠 <strong>Rua:</strong> ${data.logradouro}
+                </p>
+                <p style="margin: 0 0 8px 0; font-size: 13px;">
+                  🏘️ <strong>Bairro:</strong> ${data.bairro}
+                </p>
+                <p style="margin: 0 0 8px 0; font-size: 13px;">
+                  🏙️ <strong>Cidade:</strong> ${data.localidade}
+                </p>
+                <p style="margin: 0; font-size: 13px;">
+                  🎯 <strong>UF:</strong> ${data.uf}
                 </p>
               </div>
-            `);
-            
-            marker.bindPopup(popup);
-            
-            // Abre o popup automaticamente
-            marker.openPopup();
-            
-          } else {
-            // Se não encontrar a localização, mostra uma mensagem
-            mapaDiv.innerHTML = `
-              <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #6c757d; font-family: 'Montserrat', Arial, sans-serif;">
-                <div style="text-align: center;">
-                  <p style="margin: 0; font-size: 14px;">📍 Endereço encontrado!</p>
-                  <p style="margin: 5px 0 0 0; font-size: 12px;">CEP: ${data.cep}</p>
-                  <p style="margin: 5px 0 0 0; font-size: 12px;">${data.logradouro}, ${data.bairro}</p>
-                  <p style="margin: 5px 0 0 0; font-size: 12px;">${data.localidade} - ${data.uf}</p>
-                </div>
-              </div>
-            `;
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao buscar localização:', error);
-          // Em caso de erro, mostra uma mensagem amigável
-          mapaDiv.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #6c757d; font-family: 'Montserrat', Arial, sans-serif;">
-              <div style="text-align: center;">
-                <p style="margin: 0; font-size: 14px;">✅ Endereço validado com sucesso!</p>
-                <p style="margin: 5px 0 0 0; font-size: 12px;">CEP: ${data.cep}</p>
-                <p style="margin: 5px 0 0 0; font-size: 12px;">${data.logradouro}, ${data.bairro}</p>
-                <p style="margin: 5px 0 0 0; font-size: 12px;">${data.localidade} - ${data.uf}</p>
-                <p style="margin: 10px 0 0 0; font-size: 11px; color: #999;">Mapa temporariamente indisponível</p>
-              </div>
+              <a href="https://www.google.com/maps/search/${enderecoEncoded}" target="_blank" style="
+                display: inline-block;
+                padding: 12px 24px;
+                background: var(--estoca-blue);
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(0,116,217,0.3);
+              " onmouseover="this.style.background='var(--estoca-orange)'; this.style.transform='translateY(-2px)'" 
+                 onmouseout="this.style.background='var(--estoca-blue)'; this.style.transform='translateY(0)'">
+                🗺️ Ver no Google Maps
+              </a>
             </div>
           `;
-        });
+        }
+      }, 2000);
     }
   </script>
 </body>
