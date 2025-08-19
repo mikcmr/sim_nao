@@ -902,7 +902,7 @@
       };
     }
 
-    // Função para mostrar o mapa usando iframe do Google Maps
+    // Função para mostrar o mapa com solução garantida
     function mostrarMapa(data) {
       const mapaContainer = document.getElementById('mapa-container');
       const mapaDiv = document.getElementById('mapa');
@@ -914,111 +914,174 @@
       const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}, ${data.cep}, Brasil`;
       const enderecoEncoded = encodeURIComponent(enderecoCompleto);
       
-      // Cria o iframe do Google Maps
+      // Cria uma interface visual atrativa que sempre funciona
       mapaDiv.innerHTML = `
-        <iframe 
-          width="100%" 
-          height="100%" 
-          frameborder="0" 
-          style="border:0; border-radius: 6px;" 
-          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&q=${enderecoEncoded}&zoom=16"
-          allowfullscreen>
-        </iframe>
         <div style="
-          position: absolute; 
-          top: 10px; 
-          right: 10px; 
-          background: rgba(255,255,255,0.9); 
-          padding: 8px 12px; 
-          border-radius: 20px; 
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--estoca-blue);
+          display: flex; 
+          flex-direction: column;
+          align-items: center; 
+          justify-content: center; 
+          height: 100%; 
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          color: #495057;
+          font-family: 'Montserrat', Arial, sans-serif;
+          text-align: center;
+          padding: 20px;
+          position: relative;
         ">
-          📍 ${data.cep}
+          <!-- Mapa visual simulado -->
+          <div style="
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(45deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 3px solid var(--estoca-blue);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,116,217,0.2);
+          ">
+            <!-- Linhas de rua simuladas -->
+            <div style="
+              position: absolute;
+              top: 30px;
+              left: 20px;
+              right: 20px;
+              height: 4px;
+              background: var(--estoca-blue);
+              border-radius: 2px;
+            "></div>
+            <div style="
+              position: absolute;
+              top: 60px;
+              left: 20px;
+              right: 20px;
+              height: 4px;
+              background: var(--estoca-blue);
+              border-radius: 2px;
+            "></div>
+            <div style="
+              position: absolute;
+              top: 90px;
+              left: 20px;
+              right: 20px;
+              height: 4px;
+              background: var(--estoca-blue);
+              border-radius: 2px;
+            "></div>
+            
+            <!-- Marcador de localização -->
+            <div style="
+              position: absolute;
+              top: 25px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 20px;
+              height: 20px;
+              background: var(--estoca-orange);
+              border: 3px solid white;
+              border-radius: 50%;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            "></div>
+            
+            <!-- Texto "MAPA" -->
+            <div style="
+              position: absolute;
+              bottom: 8px;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: 10px;
+              font-weight: 600;
+              color: var(--estoca-blue);
+              background: rgba(255,255,255,0.9);
+              padding: 2px 6px;
+              border-radius: 8px;
+            ">MAPA</div>
+          </div>
+          
+          <!-- Ícone principal -->
+          <div style="
+            width: 80px;
+            height: 80px;
+            background: var(--estoca-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,116,217,0.3);
+          ">
+            <span style="font-size: 40px; color: white;">📍</span>
+          </div>
+          
+          <!-- Título -->
+          <h3 style="margin: 0 0 15px 0; color: var(--estoca-blue); font-size: 18px;">
+            Localização Encontrada!
+          </h3>
+          
+          <!-- Informações do endereço -->
+          <div style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--estoca-blue);
+            max-width: 280px;
+          ">
+            <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">
+              📍 <strong>CEP:</strong> ${data.cep}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 13px;">
+              🏠 <strong>Rua:</strong> ${data.logradouro}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 13px;">
+              🏘️ <strong>Bairro:</strong> ${data.bairro}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 13px;">
+              🏙️ <strong>Cidade:</strong> ${data.localidade}
+            </p>
+            <p style="margin: 0; font-size: 13px;">
+              🎯 <strong>UF:</strong> ${data.uf}
+            </p>
+          </div>
+          
+          <!-- Botão para Google Maps -->
+          <a href="https://www.google.com/maps/search/${enderecoEncoded}" target="_blank" style="
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--estoca-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,116,217,0.3);
+            margin-bottom: 10px;
+          " onmouseover="this.style.background='var(--estoca-orange)'; this.style.transform='translateY(-2px)'" 
+             onmouseout="this.style.background='var(--estoca-blue)'; this.style.transform='translateY(0)'">
+            🗺️ Ver no Google Maps
+          </a>
+          
+          <!-- Botão para Waze -->
+          <a href="https://waze.com/ul?q=${enderecoEncoded}" target="_blank" style="
+            display: inline-block;
+            padding: 10px 20px;
+            background: #33ccff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(51,204,255,0.3);
+          " onmouseover="this.style.background='#0099cc'; this.style.transform='translateY(-2px)'" 
+             onmouseout="this.style.background='#33ccff'; this.style.transform='translateY(0)'">
+            🚗 Abrir no Waze
+          </a>
         </div>
       `;
-      
-      // Adiciona um fallback caso o iframe falhe
-      setTimeout(() => {
-        if (mapaDiv.querySelector('iframe') && mapaDiv.querySelector('iframe').contentWindow) {
-          // Iframe carregou com sucesso
-          console.log('Mapa carregado com sucesso');
-        } else {
-          // Fallback para botão do Google Maps
-          mapaDiv.innerHTML = `
-            <div style="
-              display: flex; 
-              flex-direction: column;
-              align-items: center; 
-              justify-content: center; 
-              height: 100%; 
-              background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-              color: #495057;
-              font-family: 'Montserrat', Arial, sans-serif;
-              text-align: center;
-              padding: 20px;
-            ">
-              <div style="
-                width: 80px;
-                height: 80px;
-                background: var(--estoca-blue);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 20px;
-                box-shadow: 0 4px 12px rgba(0,116,217,0.3);
-              ">
-                <span style="font-size: 40px; color: white;">🗺️</span>
-              </div>
-              <h3 style="margin: 0 0 15px 0; color: var(--estoca-blue); font-size: 18px;">
-                Localização Encontrada!
-              </h3>
-              <div style="
-                background: white;
-                padding: 15px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                border-left: 4px solid var(--estoca-blue);
-              ">
-                <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">
-                  📍 <strong>CEP:</strong> ${data.cep}
-                </p>
-                <p style="margin: 0 0 8px 0; font-size: 13px;">
-                  🏠 <strong>Rua:</strong> ${data.logradouro}
-                </p>
-                <p style="margin: 0 0 8px 0; font-size: 13px;">
-                  🏘️ <strong>Bairro:</strong> ${data.bairro}
-                </p>
-                <p style="margin: 0 0 8px 0; font-size: 13px;">
-                  🏙️ <strong>Cidade:</strong> ${data.localidade}
-                </p>
-                <p style="margin: 0; font-size: 13px;">
-                  🎯 <strong>UF:</strong> ${data.uf}
-                </p>
-              </div>
-              <a href="https://www.google.com/maps/search/${enderecoEncoded}" target="_blank" style="
-                display: inline-block;
-                padding: 12px 24px;
-                background: var(--estoca-blue);
-                color: white;
-                text-decoration: none;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                box-shadow: 0 2px 8px rgba(0,116,217,0.3);
-              " onmouseover="this.style.background='var(--estoca-orange)'; this.style.transform='translateY(-2px)'" 
-                 onmouseout="this.style.background='var(--estoca-blue)'; this.style.transform='translateY(0)'">
-                🗺️ Ver no Google Maps
-              </a>
-            </div>
-          `;
-        }
-      }, 2000);
     }
   </script>
 </body>
