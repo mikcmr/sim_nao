@@ -699,14 +699,23 @@
           <input type="text" id="cep" name="cep" required placeholder="00000-000" maxlength="8" />
           <div id="cep-alert" class="msg error" style="display:none;"></div>
           
-          <!-- Mapa que aparece quando o CEP é digitado -->
-          <div id="mapa-container" style="display:none; margin: 20px 0;">
-            <div style="background: #e3f2fd; padding: 12px; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid var(--estoca-blue);">
-              <p style="margin: 0; font-size: 0.9rem; color: #1565c0;">
-                <strong>Localização encontrada:</strong> Visualize o endereço no mapa abaixo.
-              </p>
-            </div>
-            <div id="mapa" style="width: 100%; height: 300px; border-radius: 8px; overflow: hidden; border: 2px solid var(--estoca-blue);"></div>
+          <!-- Link discreto para Google Maps -->
+          <div id="mapa-container" style="display:none; margin: 15px 0; text-align: center;">
+            <a id="link-maps" href="#" target="_blank" style="
+              display: inline-block;
+              padding: 8px 16px;
+              background: transparent;
+              color: var(--estoca-blue);
+              text-decoration: none;
+              border: 1px solid var(--estoca-blue);
+              border-radius: 4px;
+              font-size: 13px;
+              font-weight: 500;
+              transition: all 0.2s ease;
+            " onmouseover="this.style.background='var(--estoca-blue)'; this.style.color='white'" 
+               onmouseout="this.style.background='transparent'; this.style.color='var(--estoca-blue)'">
+              🗺️ Ver no Google Maps
+            </a>
           </div>
           
           <label for="logradouro" style="font-size:0.95rem;">Rua:</label>
@@ -908,80 +917,20 @@
       };
     }
 
-    // Função para mostrar o mapa com link discreto do Google Maps
+    // Função para mostrar apenas o link do Google Maps
     function mostrarMapa(data) {
       const mapaContainer = document.getElementById('mapa-container');
-      const mapaDiv = document.getElementById('mapa');
+      const linkMaps = document.getElementById('link-maps');
       
-      // Mostra o container do mapa
+      // Mostra o container do link
       mapaContainer.style.display = 'block';
       
-      // Monta o endereço completo para o mapa
+      // Monta o endereço completo para o Google Maps
       const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}, ${data.cep}, Brasil`;
       const enderecoEncoded = encodeURIComponent(enderecoCompleto);
       
-      // Cria uma interface simples e discreta
-      mapaDiv.innerHTML = `
-        <div style="
-          display: flex; 
-          flex-direction: column;
-          align-items: center; 
-          justify-content: center; 
-          height: 100%; 
-          background: #f8f9fa;
-          color: #495057;
-          font-family: 'Montserrat', Arial, sans-serif;
-          text-align: center;
-          padding: 20px;
-        ">
-          <!-- Informações do endereço -->
-          <div style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--estoca-blue);
-            max-width: 300px;
-          ">
-            <h4 style="margin: 0 0 15px 0; color: var(--estoca-blue); font-size: 16px;">
-              📍 Endereço Encontrado
-            </h4>
-            <p style="margin: 0 0 8px 0; font-size: 14px;">
-              <strong>CEP:</strong> ${data.cep}
-            </p>
-            <p style="margin: 0 0 8px 0; font-size: 14px;">
-              <strong>Rua:</strong> ${data.logradouro}
-            </p>
-            <p style="margin: 0 0 8px 0; font-size: 14px;">
-              <strong>Bairro:</strong> ${data.bairro}
-            </p>
-            <p style="margin: 0 0 8px 0; font-size: 14px;">
-              <strong>Cidade:</strong> ${data.localidade}
-            </p>
-            <p style="margin: 0; font-size: 14px;">
-              <strong>UF:</strong> ${data.uf}
-            </p>
-          </div>
-          
-          <!-- Link discreto para Google Maps -->
-          <a href="https://www.google.com/maps/search/${enderecoEncoded}" target="_blank" style="
-            display: inline-block;
-            padding: 8px 16px;
-            background: transparent;
-            color: var(--estoca-blue);
-            text-decoration: none;
-            border: 1px solid var(--estoca-blue);
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-          " onmouseover="this.style.background='var(--estoca-blue)'; this.style.color='white'" 
-             onmouseout="this.style.background='transparent'; this.style.color='var(--estoca-blue)'">
-            🗺️ Ver no Google Maps
-          </a>
-        </div>
-      `;
+      // Configura o link do Google Maps
+      linkMaps.href = `https://www.google.com/maps/search/${enderecoEncoded}`;
     }
   </script>
 </body>
