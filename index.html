@@ -13,6 +13,7 @@
       --estoca-white: #fff;
       --estoca-black: #222;
     }
+
     body {
       font-family: 'Montserrat', Arial, sans-serif;
       background: var(--estoca-bg);
@@ -20,6 +21,7 @@
       padding: 0;
       color: var(--estoca-black);
     }
+
     .container {
       max-width: 500px;
       margin: 40px auto;
@@ -29,6 +31,7 @@
       padding: 32px;
       position: relative;
     }
+
     h2 {
       margin-top: 0;
       color: var(--estoca-blue);
@@ -37,14 +40,17 @@
       line-height: 1.2;
       letter-spacing: 0.01em;
     }
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
+
     li {
       margin-bottom: 12px;
     }
+
     button {
       width: 100%;
       padding: 12px;
@@ -58,11 +64,13 @@
       transition: background 0.2s;
       font-weight: 700;
     }
+
     button:hover,
     .motivo-btn:hover,
     .enviar-btn:hover {
       background: var(--estoca-blue);
     }
+
     /* Menu Cards Grid */
     .menu-card-grid {
       display: flex;
@@ -71,6 +79,7 @@
       margin-top: 24px;
       flex-wrap: wrap;
     }
+
     .menu-card {
       background: var(--estoca-blue);
       color: var(--estoca-white);
@@ -85,10 +94,12 @@
       transition: background-color 0.3s, transform 0.2s;
       user-select: none;
     }
+
     .menu-card:hover {
       background: var(--estoca-orange);
       transform: translateY(-3px);
     }
+
     .menu-icon {
       display: flex;
       align-items: center;
@@ -99,17 +110,21 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
+
     .action-title {
       font-weight: 600;
       font-size: 1rem;
     }
+
     .msg {
       margin-top: 16px;
     }
+
     .msg.error {
       color: #d00;
       font-weight: 600;
     }
+
     /* Action Boxes */
     .action-box {
       background: var(--estoca-blue);
@@ -129,12 +144,14 @@
       display: block;
       user-select: none;
     }
+
     .action-box:hover {
       background: var(--estoca-orange);
       color: var(--estoca-white);
       transform: translateY(-2px) scale(1.02);
     }
-    /* Autocomplete List */
+
+    /* Autocomplete lists */
     ul.autocomplete-list {
       list-style: none;
       padding: 0;
@@ -150,20 +167,25 @@
       display: none;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
+
     ul.autocomplete-list li {
       padding: 8px;
       cursor: pointer;
       border-bottom: 1px solid #eee;
     }
+
     ul.autocomplete-list li:last-child {
       border-bottom: none;
     }
+
     ul.autocomplete-list li:hover {
       background-color: var(--estoca-orange);
       color: var(--estoca-white);
     }
-    /* Input and Textarea */
-    input[type="text"], input[type="email"], textarea {
+
+    /* Input fields and textarea */
+    input[type="text"],
+    textarea {
       width: 100%;
       margin-bottom: 8px;
       padding: 7px;
@@ -172,13 +194,14 @@
       font-size: 0.95rem;
       font-family: 'Montserrat', Arial, sans-serif;
       box-sizing: border-box;
-      color: var(--estoca-black);
     }
+
     textarea {
       resize: vertical;
       min-height: 80px;
     }
-    /* Position relative (autocomplete container) */
+
+    /* For relative positioning of autocomplete container */
     .autocomplete-wrapper {
       position: relative;
       width: 100%;
@@ -187,32 +210,67 @@
 </head>
 <body>
   <div class="container" id="main-container">
-    <!-- Content inserted by JS -->
+    <h2>Qual ação você quer fazer?</h2>
+    <div class="menu-card-grid">
+      <div class="menu-card" id="acao1">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Falar sobre um chamado já aberto</span>
+      </div>
+      <div class="menu-card" id="acao2">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Solicitação sobre um pedido de venda</span>
+      </div>
+      <div class="menu-card" id="acao3">
+        <span class="menu-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18"
+              stroke="#fff" stroke-width="2" />
+            <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32"
+              stroke="#fff" stroke-width="1.5" />
+          </svg>
+        </span>
+        <span class="action-title">Demais solicitações</span>
+      </div>
+    </div>
+    <div id="msg" class="msg"></div>
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Parametros URL (se necessário use para preencher formulários)
     const urlParams = new URLSearchParams(window.location.search);
     const ticket_id = urlParams.get('ticket_id') || '';
     const conversation_id = urlParams.get('conversation_id') || '';
-    const email_cliente = urlParams.get('email_cliente') || '';
-
     const container = document.getElementById('main-container');
-    const TICKET_KEY = 'eva_ticket_' + ticket_id;
 
-    // Se ticket já respondido, mensagem e bloqueio
+    const TICKET_KEY = 'eva_ticket_' + ticket_id;
     if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
-      container.innerHTML = \`<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>\`;
-      return;
+      container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
+    } else {
+      document.getElementById('acao1').onclick = abrirFluxo1;
+      document.getElementById('acao2').onclick = abrirFluxo2;
+      document.getElementById('acao3').onclick = abrirFluxo3;
     }
 
-    // Função auxiliar: valida UUID
     function validarUUID(uuid) {
       return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(uuid);
     }
 
-    // Função para enviar webhook
     async function enviarWebhook(payload) {
       try {
         await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
@@ -220,171 +278,115 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if(payload.ticket_id) {
+        if (payload.ticket_id) {
           localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
         }
-      } catch(e) {
+      } catch (e) {
         console.error('Erro ao enviar webhook:', e);
       }
     }
 
-    // Iniciar menu principal com 4 opções (incluido alteração endereço)
-    function renderMenuPrincipal(){
-      container.innerHTML = \`
-        <h2>Qual ação você quer fazer?</h2>
-        <div class="menu-card-grid">
-          <div class="menu-card" id="acao1">
-            <span class="menu-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2" />
-                <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5" />
-              </svg>
-            </span>
-            <span class="action-title">Falar sobre um chamado já aberto</span>
-          </div>
-
-          <div class="menu-card" id="acaoEndereco">
-            <span class="menu-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 4L4 14H8V26H24V14H28L16 4Z" stroke="#fff" stroke-width="2" fill="rgba(255 255 255 / 0.2)" />
-              </svg>
-            </span>
-            <span class="action-title">Alteração de endereço</span>
-          </div>
-
-          <div class="menu-card" id="acao2">
-            <span class="menu-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2" />
-                <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5" />
-              </svg>
-            </span>
-            <span class="action-title">Solicitação sobre um pedido de venda</span>
-          </div>
-
-          <div class="menu-card" id="acao3">
-            <span class="menu-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="10" width="24" height="14" rx="3" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="2" />
-                <rect x="8" y="6" width="16" height="8" rx="2" fill="#fff" fill-opacity="0.32" stroke="#fff" stroke-width="1.5" />
-              </svg>
-            </span>
-            <span class="action-title">Demais solicitações</span>
-          </div>
-        </div>
-        <div id="msg" class="msg"></div>
-      \`;
-
-      // Adicionar eventos de clique
-      document.getElementById('acao1').onclick = abrirFluxo1;
-      document.getElementById('acaoEndereco').onclick = abrirFluxoEndereco;
-      document.getElementById('acao2').onclick = abrirFluxo2;
-      document.getElementById('acao3').onclick = abrirFluxo3;
-    }
-
-    // === Fluxo 1: chamado aberto ===
-    function abrirFluxo1(){
-      container.innerHTML = \`
+    function abrirFluxo1() {
+      container.innerHTML = `
         <h2>Chamado já aberto</h2>
-        <form id="form1" novalidate>
-          <label for="ticketid">TicketID:</label>
+        <form id="form1" class="form-box" novalidate>
+          <label for="ticketid" style="font-size:0.95rem;">TicketID:</label>
           <input type="text" id="ticketid" name="ticketid" required />
-          <label for="email_cliente">Email do cliente:</label>
-          <input type="email" id="email_cliente" name="email_cliente" required value="\${email_cliente}" />
-          <label for="solicitacao">Solicitação:</label>
+          <label for="solicitacao" style="font-size:0.95rem;">Solicitação:</label>
           <textarea id="solicitacao" name="solicitacao" required></textarea>
-          <div class="action-box" id="enviar1">Enviar</div>
+          <div class="action-box" id="enviar-chamado">Enviar</div>
         </form>
         <div id="msg" class="msg"></div>
-      \`;
+      `;
 
+      const enviarBtn = document.getElementById('enviar-chamado');
       const form = document.getElementById('form1');
-      const enviarBtn = document.getElementById('enviar1');
       const msg = document.getElementById('msg');
 
       enviarBtn.onclick = async e => {
         e.preventDefault();
-        const ticketid = form.ticketid.value.trim();
-        const emailClienteVal = form.email_cliente.value.trim();
-        const solicitacao = form.solicitacao.value.trim();
-        msg.textContent = ''; msg.className = 'msg';
 
-        if(!ticketid){
-          msg.textContent = 'Preencha o TicketID.'; msg.classList.add('error'); return;
+        const ticketid = form.ticketid.value.trim();
+        const solicitacao = form.solicitacao.value.trim();
+
+        msg.textContent = '';
+        msg.className = 'msg';
+
+        if (!ticketid) {
+          msg.textContent = 'Preencha o TicketID.';
+          msg.classList.add('error');
+          return;
         }
-        if(!emailClienteVal){
-          msg.textContent = 'Preencha o email do cliente.'; msg.classList.add('error'); return;
-        }
-        if(!solicitacao){
-          msg.textContent = 'Preencha a solicitação.'; msg.classList.add('error'); return;
+        if (!solicitacao) {
+          msg.textContent = 'Preencha a solicitação.';
+          msg.classList.add('error');
+          return;
         }
 
         await enviarWebhook({
-          tipo: 'chamado_aberto', ticketid, solicitacao,
-          ticket_id, conversation_id, email_cliente: emailClienteVal
+          tipo: 'chamado_aberto',
+          ticketid,
+          solicitacao,
+          ticket_id,
+          conversation_id,
         });
 
-        container.innerHTML = \`
-          <h2>Solicitação enviada!</h2>
-          <div class="msg">TicketID: \${ticketid}<br>Email: \${emailClienteVal}<br>Solicitação: \${solicitacao}</div>
-        \`;
+        container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Solicitação: ${solicitacao}</div>`;
       };
 
-      form.onsubmit = e => { e.preventDefault(); enviarBtn.click(); };
+      form.onsubmit = e => {
+        e.preventDefault();
+        enviarBtn.click();
+      };
     }
 
-    // === Fluxo 2: pedido de venda (sem "alteração de endereço") ===
-    function abrirFluxo2(){
+    function abrirFluxo2() {
       const motivosPedido = [
-        // "Alteração de endereço" removida aqui
-        { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
-        { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
-        { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
-        { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
-        { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
-        { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
-        { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
-        { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+        { texto: 'Alteração de endereço', label: 'alterações_no_pedido__alteração_de_endereço' },
         { texto: 'Interrupção de entrega (devolução)', label: 'alterações_no_pedido__interrupção_de_entrega__devolução_' },
-        { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' },
-        { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
-        { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
+        { texto: 'Devolução por insucesso', label: 'devolução__devolução_por_insucesso' },
+        { texto: 'Código de Reversa', label: 'logística_reversa__código_de_reversa' },
+        { texto: 'Problema com logística reversa', label: 'logística_reversa__problema_com_logística_reversa' },
+        { texto: 'Pedido B2B', label: 'pedido_b2b' },
+        { texto: 'Alteração/ajuste de SKU', label: 'pedido__alteração/ajuste_de_sku' },
+        { texto: 'Cancelar/deletar pedido', label: 'pedido__cancelar/deletar_pedido_' },
+        { texto: 'Criar/integrar pedido manualmente', label: 'pedido__criar/integrar_pedido_manualmente' },
+        { texto: 'Dúvida sobre status do pedido na plataforma', label: 'pedido__dúvida_sobre_status_do_pedido_na_plataforma' },
+        { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
+        { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+        { texto: 'Acareação', label: 'problemas_com_a_entrega__acareação' },
+        { texto: 'Comprovante de entrega', label: 'problemas_com_a_entrega__comprovante_de_entrega' },
         { texto: 'O pedido está em atraso', label: 'problemas_com_a_entrega__o_pedido_está_em_atraso' },
         { texto: 'O pedido está retido em posto fiscal (SEFAZ)', label: 'problemas_com_a_entrega__o_pedido_está_retido_em_posto_fiscal__sefaz_' },
-        { texto: 'Pedido "aguardando liberação"', label: 'pedido__pedido__aguardando_liberação_' },
-        { texto: 'Pedido B2B', label: 'pedido_b2b' },
+        { texto: 'O pedido foi avariado', label: 'problemas_com_a_entrega__o_pedido_foi_avariado' },
+        { texto: 'O pedido foi extraviado', label: 'problemas_com_a_entrega__o_pedido_foi_extraviado' },
         { texto: 'Pedido entregue com itens faltando/errados (fulfillment)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__fulfillment_' },
         { texto: 'Pedido entregue com itens faltando/errados (transportes)', label: 'problemas_com_a_entrega__pedido_entregue_com_itens_faltando/errados__transportes_' },
-        { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
-        { texto: 'Ressincronizar pedido', label: 'pedido__ressincronizar_pedido' },
+        { texto: 'Reabertura de Acareação', label: 'problemas_com_a_entrega__reabertura_de_acareação' },
         { texto: 'Dúvida sobre prazo de entrega', label: 'rastreamento__dúvida_sobre_prazo_de_entrega' },
         { texto: 'Dúvidas sobre o status do rastreamento', label: 'rastreamento__dúvidas_sobre_o_status_do_rastreamento' },
-        { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' }
-      ].sort((a,b) => a.texto.localeCompare(b.texto));
+        { texto: 'Problemas com Tracking.Estoca', label: 'rastreamento__problemas_com_tracking.estoca' },
+        { texto: 'Pedido redespachado via Correios', label: 'redespacho__pedido_redespachado_via_correios' },
+        { texto: 'Má conduta do transportador', label: 'problemas_com_a_entrega__má_conduta_do_transportador' }
+      ].sort((a, b) => a.texto.localeCompare(b.texto));
 
-      container.innerHTML = \`
+      container.innerHTML = `
         <h2>Motivo do pedido de venda:</h2>
-        <form id="formPedido" novalidate style="position:relative;">
-          <label for="motivo-pedido">Motivo:</label>
+        <form id="formPedido" class="form-box" novalidate style="position:relative;">
+          <label for="motivo-pedido" style="font-size:0.95rem;">Motivo:</label>
           <div class="autocomplete-wrapper">
             <input type="text" id="motivo-pedido" name="motivo-pedido" autocomplete="off" required placeholder="Digite para buscar..." />
             <ul id="motivo-pedido-list" class="autocomplete-list"></ul>
           </div>
-          <label for="orderid">Pedido (UUID):</label>
+          <label for="orderid" style="font-size:0.95rem;">Pedido (UUID):</label>
           <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
           <div id="uuid-alert" class="msg error" style="display:none;"></div>
-          <label for="email_cliente">Email do cliente:</label>
-          <input type="email" id="email_cliente" name="email_cliente" required value="\${email_cliente}" />
-          <label for="descricao">Descrição:</label>
+          <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
           <textarea id="descricao" name="descricao" required></textarea>
           <div class="action-box" id="enviar-pedido">Enviar</div>
         </form>
         <div id="msg" class="msg"></div>
-      \`;
+      `;
 
       const motivoInput = document.getElementById('motivo-pedido');
       const motivoList = document.getElementById('motivo-pedido-list');
@@ -395,12 +397,15 @@
       motivoInput.addEventListener('input', () => {
         const val = motivoInput.value.toLowerCase();
         motivoList.innerHTML = '';
-        if(!val){
+
+        if (!val) {
           motivoList.style.display = 'none';
           motivoSelecionado = null;
           return;
         }
+
         const filtrados = motivosPedido.filter(m => m.texto.toLowerCase().includes(val));
+
         filtrados.forEach(motivo => {
           const li = document.createElement('li');
           li.textContent = motivo.texto;
@@ -415,17 +420,18 @@
       });
 
       motivoInput.addEventListener('focus', () => {
-        if(motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+        if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
       });
+
       document.addEventListener('click', e => {
-        if(!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+        if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
           motivoList.style.display = 'none';
         }
       });
 
       uuidInput.addEventListener('input', () => {
-        if(!validarUUID(uuidInput.value.trim())){
-          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID no formato xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.';
+        if (!validarUUID(uuidInput.value.trim())) {
+          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID (36 caracteres, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).';
           uuidAlert.style.display = 'block';
         } else {
           uuidAlert.textContent = '';
@@ -439,50 +445,50 @@
 
       enviarBtn.onclick = async e => {
         e.preventDefault();
+
         const orderid = uuidInput.value.trim();
         const descricao = form.descricao.value.trim();
-        const emailClienteVal = form.email_cliente.value.trim();
         const motivoAtual = motivoSelecionado || motivosPedido.find(m => m.texto === motivoInput.value.trim());
+
         msg.textContent = '';
         msg.className = 'msg';
 
-        if(!motivoAtual){
+        if (!motivoAtual) {
           msg.textContent = 'Selecione um motivo válido.';
           msg.classList.add('error');
           return;
         }
-        if(!validarUUID(orderid)){
+
+        if (!validarUUID(orderid)) {
           uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
           uuidAlert.style.display = 'block';
           return;
-        } else {
-          uuidAlert.style.display = 'none';
         }
-        if(!emailClienteVal){
-          msg.textContent = 'Preencha o email do cliente.';
-          msg.classList.add('error');
-          return;
-        }
-        if(!descricao){
+
+        if (!descricao) {
           msg.textContent = 'Preencha a descrição.';
           msg.classList.add('error');
           return;
         }
 
         await enviarWebhook({
-          tipo: 'pedido_venda', orderid, motivo: motivoAtual.label, motivo_texto: motivoAtual.texto, descricao,
-          ticket_id, conversation_id, email_cliente: emailClienteVal
+          tipo: 'pedido_venda',
+          orderid,
+          motivo: motivoAtual.label,
+          motivo_texto: motivoAtual.texto,
+          descricao,
+          ticket_id,
+          conversation_id,
         });
 
-        container.innerHTML = \`
+        container.innerHTML = `
           <h2>Solicitação enviada!</h2>
           <div class="msg">
-            Pedido: \${orderid}<br>
-            Email: \${emailClienteVal}<br>
-            Motivo: \${motivoAtual.texto}<br>
-            Descrição: \${descricao}
+            Pedido: ${orderid}<br>
+            Motivo: ${motivoAtual.texto}<br>
+            Descrição: ${descricao}
           </div>
-        \`;
+        `;
       };
 
       form.onsubmit = e => {
@@ -491,47 +497,45 @@
       };
     }
 
-    // === Fluxo 3: demais solicitações ===
-    function abrirFluxo3(){
+    function abrirFluxo3() {
+      // Mantém essa função igual ao código anterior ou ajuste conforme necessário...
       const motivosDiversos = [
-          { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
-          { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
-          { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
-          { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
-          { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
-          { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
-          { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
-          { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
-          { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
-          { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
-          { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
-          { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
-          { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
-          { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
-          { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
-          { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
-          { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
-          { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
-          { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
-          { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
+        { texto: 'Armazenamento de Inbound atrasado', label: 'inbound__armazenamento_de_inbound_atrasado' },
+        { texto: 'Cancelamento de retirada de itens do armazém', label: 'retirada__cancelamento_de_retirada_de_itens_do_armazém' },
+        { texto: 'Código de coleta e devolução Mercado Livre', label: 'retirada__código_de_coleta_e_devolução_mercado_livre' },
+        { texto: 'Contagem de Inventário', label: 'armazenagem__contagem_de_inventário' },
+        { texto: 'Disponibilidade de insumos e embalagens', label: 'armazenagem__disponibilidade_de_insumos_e_embalagens' },
+        { texto: 'Dúvida sobre cobrança na fatura', label: 'fatura__dúvida_sobre_cobrança_na_fatura' },
+        { texto: 'Dúvida sobre Criação/Agendamento de Inbound', label: 'inbound__dúvida_sobre_criação/agendamento_de_inbound' },
+        { texto: 'Dúvida sobre funcionalidade da Plataforma', label: 'plataforma__dúvida_sobre_funcionalidade_da_plataforma' },
+        { texto: 'Dúvida sobre ressarcimento', label: 'fatura__dúvida_sobre_ressarcimento' },
+        { texto: 'Dúvida sobre status do Inbound', label: 'inbound__dúvida_sobre_status_do_inbound' },
+        { texto: 'Erro na Plataforma', label: 'plataforma__erro_na_plataforma' },
+        { texto: 'Item avariado no armazém', label: 'armazenagem__item_avariado_no_armazém_' },
+        { texto: 'Lentidão na Plataforma', label: 'plataforma__lentidão_na_plataforma' },
+        { texto: 'Problema com Inbound', label: 'inbound__problema_com_inbound' },
+        { texto: 'Problemas com Login na Plataforma', label: 'plataforma__problemas_com_login_na_plataforma' },
+        { texto: 'Problema com retirada de itens do armazém', label: 'retirada__problema_com_retirada_de_itens_do_armazém' },
+        { texto: 'Prioridade no Inbound', label: 'inbound__prioridade_no_inbound' },
+        { texto: 'Solicitação de customização', label: 'armazenagem__solicitação_de_customização' },
+        { texto: 'Solicitação de retirada de itens do armazém', label: 'retirada__solicitação_de_retirada_de_itens_do_armazém' },
+        { texto: 'Transferência de estoque entre armazéns', label: 'retirada__transferência_de_estoque_entre_armazéns' }
       ].sort((a,b) => a.texto.localeCompare(b.texto));
 
-      container.innerHTML = \`
+      container.innerHTML = `
         <h2>Motivo da solicitação:</h2>
-        <form id="formDiversos" novalidate style="position:relative;">
-          <label for="motivo-diverso">Motivo:</label>
+        <form id="formDiversos" class="form-box" novalidate style="position:relative;">
+          <label for="motivo-diverso" style="font-size:0.95rem;">Motivo:</label>
           <div class="autocomplete-wrapper">
             <input type="text" id="motivo-diverso" name="motivo-diverso" autocomplete="off" required placeholder="Digite para buscar..." />
             <ul id="motivo-diverso-list" class="autocomplete-list"></ul>
           </div>
-          <label for="email_cliente">Email do cliente:</label>
-          <input type="email" id="email_cliente" name="email_cliente" required value="\${email_cliente}" />
-          <label for="descricao">Descrição:</label>
+          <label for="descricao" style="font-size:0.95rem;">Descrição:</label>
           <textarea id="descricao" name="descricao" required></textarea>
           <div class="action-box" id="enviar-diversos">Enviar</div>
         </form>
         <div id="msg" class="msg"></div>
-      \`;
+      `;
 
       const motivoInput = document.getElementById('motivo-diverso');
       const motivoList = document.getElementById('motivo-diverso-list');
@@ -540,12 +544,17 @@
       motivoInput.addEventListener('input', () => {
         const val = motivoInput.value.toLowerCase();
         motivoList.innerHTML = '';
-        if(!val){
+
+        if (!val) {
           motivoList.style.display = 'none';
           motivoSelecionado = null;
           return;
         }
-        const filtrados = motivosDiversos.filter(m => m.texto.toLowerCase().includes(val));
+
+        const filtrados = motivosDiversos.filter(m =>
+          m.texto.toLowerCase().includes(val)
+        );
+
         filtrados.forEach(motivo => {
           const li = document.createElement('li');
           li.textContent = motivo.texto;
@@ -556,14 +565,16 @@
           };
           motivoList.appendChild(li);
         });
+
         motivoList.style.display = filtrados.length ? 'block' : 'none';
       });
 
       motivoInput.addEventListener('focus', () => {
-        if(motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
+        if (motivoInput.value) motivoInput.dispatchEvent(new Event('input'));
       });
+
       document.addEventListener('click', e => {
-        if(!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
+        if (!motivoInput.contains(e.target) && !motivoList.contains(e.target)) {
           motivoList.style.display = 'none';
         }
       });
@@ -574,41 +585,42 @@
 
       enviarBtn.onclick = async e => {
         e.preventDefault();
+
         const descricao = form.descricao.value.trim();
-        const emailClienteVal = form.email_cliente.value.trim();
-        const motivoAtual = motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
+        const motivoAtual =
+          motivoSelecionado || motivosDiversos.find(m => m.texto === motivoInput.value.trim());
+
         msg.textContent = '';
         msg.className = 'msg';
 
-        if(!motivoAtual){
+        if (!motivoAtual) {
           msg.textContent = 'Selecione um motivo válido.';
           msg.classList.add('error');
           return;
         }
-        if(!emailClienteVal){
-          msg.textContent = 'Preencha o email do cliente.';
-          msg.classList.add('error');
-          return;
-        }
-        if(!descricao){
+
+        if (!descricao) {
           msg.textContent = 'Preencha a descrição.';
           msg.classList.add('error');
           return;
         }
 
         await enviarWebhook({
-          tipo: 'demais_solicitacoes', motivo: motivoAtual.label, motivo_texto: motivoAtual.texto, descricao,
-          ticket_id, conversation_id, email_cliente: emailClienteVal
+          tipo: 'demais_solicitacoes',
+          motivo: motivoAtual.label,
+          motivo_texto: motivoAtual.texto,
+          descricao,
+          ticket_id,
+          conversation_id,
         });
 
-        container.innerHTML = \`
+        container.innerHTML = `
           <h2>Solicitação enviada!</h2>
           <div class="msg">
-            Email: \${emailClienteVal} <br>
-            Motivo: \${motivoAtual.texto} <br>
-            Descrição: \${descricao}
+            Motivo: ${motivoAtual.texto}<br />
+            Descrição: ${descricao}
           </div>
-        \`;
+        `;
       };
 
       form.onsubmit = e => {
@@ -616,174 +628,6 @@
         enviarBtn.click();
       };
     }
-
-    // === Fluxo Alteração de Endereço com consulta CEP ===
-    function abrirFluxoEndereco() {
-      container.innerHTML = \`
-        <h2>Alteração de Endereço</h2>
-        <form id="formEndereco" novalidate style="position:relative;">
-          <label for="orderid">Pedido (UUID):</label>
-          <input type="text" id="orderid" name="orderid" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-          <div id="uuid-alert" class="msg error" style="display:none;"></div>
-
-          <label for="cep" style="margin-top:12px;">CEP:</label>
-          <input type="text" id="cep" name="cep" required placeholder="Digite o CEP" maxlength="9" />
-          <div id="cep-alert" class="msg error" style="display:none;"></div>
-
-          <label for="uf" style="margin-top:12px;">UF:</label>
-          <input type="text" id="uf" name="uf" required maxlength="2" placeholder="UF" />
-
-          <label for="cidade" style="margin-top:12px;">Cidade:</label>
-          <input type="text" id="cidade" name="cidade" required placeholder="Cidade" />
-
-          <label for="bairro" style="margin-top:12px;">Bairro:</label>
-          <input type="text" id="bairro" name="bairro" required placeholder="Bairro" />
-
-          <label for="rua" style="margin-top:12px;">Rua:</label>
-          <input type="text" id="rua" name="rua" required placeholder="Rua" />
-
-          <label for="numero" style="margin-top:12px;">Número: <small>(se não houver, escreva s/n)</small></label>
-          <input type="text" id="numero" name="numero" required placeholder="Número" />
-
-          <label for="complemento" style="margin-top:12px;">Complemento: <small>(se não houver, escreva n/a)</small></label>
-          <input type="text" id="complemento" name="complemento" required placeholder="Complemento" />
-
-          <div class="action-box" id="enviarEndereco" style="margin-top:20px;">
-            Enviar
-          </div>
-        </form>
-        <div id="msg" class="msg"></div>
-      \`;
-
-      const form = document.getElementById('formEndereco');
-      const enviarBtn = document.getElementById('enviarEndereco');
-      const msg = document.getElementById('msg');
-
-      // Inputs
-      const uuidInput = form.orderid;
-      const uuidAlert = document.getElementById('uuid-alert');
-      const cepInput = form.cep;
-      const cepAlert = document.getElementById('cep-alert');
-      const ufInput = form.uf;
-      const cidadeInput = form.cidade;
-      const bairroInput = form.bairro;
-      const ruaInput = form.rua;
-      const numeroInput = form.numero;
-      const complementoInput = form.complemento;
-
-      // Máscara simples CEP
-      cepInput.addEventListener('input', () => {
-        let val = cepInput.value.replace(/\D/g, '');
-        if(val.length > 5) val = val.slice(0,5) + '-' + val.slice(5,8);
-        cepInput.value = val;
-      });
-
-      // Consulta ViaCEP
-      cepInput.addEventListener('blur', async () => {
-        const cepVal = cepInput.value.trim();
-        cepAlert.style.display = 'none';
-        if(!/^\d{5}-?\d{3}$/.test(cepVal)) {
-          cepAlert.textContent = 'CEP inválido. Formato esperado: 00000-000.';
-          cepAlert.style.display = 'block';
-          return;
-        }
-        try {
-          const cepLimpo = cepVal.replace('-', '');
-          const response = await fetch(\`https://viacep.com.br/ws/\${cepLimpo}/json/\`);
-          const data = await response.json();
-          if(data.erro){
-            cepAlert.textContent = 'CEP não encontrado.';
-            cepAlert.style.display = 'block';
-            ufInput.value = '';
-            cidadeInput.value = '';
-            bairroInput.value = '';
-            ruaInput.value = '';
-          } else {
-            cepAlert.style.display = 'none';
-            ufInput.value = data.uf || '';
-            cidadeInput.value = data.localidade || '';
-            bairroInput.value = data.bairro || '';
-            ruaInput.value = data.logradouro || '';
-          }
-        } catch(e) {
-          cepAlert.textContent = 'Erro ao consultar o CEP.';
-          cepAlert.style.display = 'block';
-        }
-      });
-
-      // Validação UUID
-      uuidInput.addEventListener('input', () => {
-        if(!validarUUID(uuidInput.value.trim())){
-          uuidAlert.textContent = 'ID do pedido inválido. Deve ser UUID válido.';
-          uuidAlert.style.display = 'block';
-        } else {
-          uuidAlert.style.display = 'none';
-        }
-      });
-
-      enviarBtn.onclick = async e => {
-        e.preventDefault();
-        msg.textContent = '';
-        msg.className = 'msg';
-
-        if (!validarUUID(uuidInput.value.trim())) {
-          uuidAlert.textContent = 'ID do pedido inválido. Deve ser um UUID.';
-          uuidAlert.style.display = 'block';
-          return;
-        }
-        uuidAlert.style.display = 'none';
-
-        if (!cepInput.value.trim() || !/^\d{5}-?\d{3}$/.test(cepInput.value.trim())) {
-          cepAlert.textContent = 'Informe um CEP válido.';
-          cepAlert.style.display = 'block';
-          return;
-        }
-        cepAlert.style.display = 'none';
-
-        if(!ufInput.value.trim()) { msg.textContent = 'Preencha o campo UF.'; msg.classList.add('error'); return; }
-        if(!cidadeInput.value.trim()) { msg.textContent = 'Preencha o campo Cidade.'; msg.classList.add('error'); return; }
-        if(!bairroInput.value.trim()) { msg.textContent = 'Preencha o campo Bairro.'; msg.classList.add('error'); return; }
-        if(!ruaInput.value.trim()) { msg.textContent = 'Preencha o campo Rua.'; msg.classList.add('error'); return; }
-        if(!numeroInput.value.trim()) { msg.textContent = 'Preencha o campo Número (se não houver, escreva s/n).'; msg.classList.add('error'); return; }
-        if(!complementoInput.value.trim()) { msg.textContent = 'Preencha o campo Complemento (se não houver, escreva n/a).'; msg.classList.add('error'); return; }
-
-        const payload = {
-          tipo: 'alteracao_endereco',
-          orderid: uuidInput.value.trim(),
-          cep: cepInput.value.trim(),
-          uf: ufInput.value.trim(),
-          cidade: cidadeInput.value.trim(),
-          bairro: bairroInput.value.trim(),
-          rua: ruaInput.value.trim(),
-          numero: numeroInput.value.trim(),
-          complemento: complementoInput.value.trim(),
-          ticket_id,
-          conversation_id,
-          email_cliente,
-        };
-
-        await enviarWebhook(payload);
-
-        container.innerHTML = \`
-          <h2>Solicitação enviada!</h2>
-          <div class="msg" style="color:var(--estoca-blue); font-weight:600;">
-            Pedido (UUID): \${payload.orderid}<br>
-            CEP: \${payload.cep}<br>
-            UF: \${payload.uf}<br>
-            Cidade: \${payload.cidade}<br>
-            Bairro: \${payload.bairro}<br>
-            Rua: \${payload.rua}<br>
-            Número: \${payload.numero}<br>
-            Complemento: \${payload.complemento}<br>
-            Email: \${payload.email_cliente}
-          </div>
-        \`;
-      };
-    }
-
-    // Inicialização exibe menu principal
-    renderMenuPrincipal();
-  });
   </script>
 </body>
 </html>
