@@ -307,9 +307,18 @@
     const urlParams = new URLSearchParams(window.location.search);
     const ticket_id = urlParams.get('ticket_id') || '';
     const conversation_id = urlParams.get('conversation_id') || '';
+    const email_cliente = urlParams.get('email_cliente') || '';
     const container = document.getElementById('main-container');
 
     const TICKET_KEY = 'eva_ticket_' + ticket_id;
+    
+    // Log para debug dos parâmetros recebidos
+    console.log('Parâmetros recebidos:', {
+      ticket_id,
+      conversation_id,
+      email_cliente
+    });
+    
     if (ticket_id && localStorage.getItem(TICKET_KEY) === 'respondido') {
       container.innerHTML = `<h2 style="color:var(--estoca-orange);">Este ticket já foi respondido.<br>Não é possível acessar novamente.</h2>`;
     } else {
@@ -325,11 +334,18 @@
 
     async function enviarWebhook(payload) {
       try {
-        await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
+        // Log do payload sendo enviado
+        console.log('Enviando webhook com payload:', payload);
+        
+        const response = await fetch('https://n8n.estoca.com.br/webhook/resposta_eva_v4', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+        
+        // Log da resposta
+        console.log('Resposta do webhook:', response.status, response.statusText);
+        
         if (payload.ticket_id) {
           localStorage.setItem('eva_ticket_' + payload.ticket_id, 'respondido');
         }
@@ -381,6 +397,7 @@
           solicitacao,
           ticket_id,
           conversation_id,
+          email_cliente,
         });
 
         container.innerHTML = `<h2>Solicitação enviada!</h2><div class="msg">TicketID: ${ticketid}<br>Solicitação: ${solicitacao}</div>`;
@@ -530,6 +547,7 @@
           descricao,
           ticket_id,
           conversation_id,
+          email_cliente,
         });
 
         container.innerHTML = `
@@ -663,6 +681,7 @@
           descricao,
           ticket_id,
           conversation_id,
+          email_cliente,
         });
 
         container.innerHTML = `
@@ -892,6 +911,7 @@
           estado,
           ticket_id,
           conversation_id,
+          email_cliente,
         });
 
         container.innerHTML = `
